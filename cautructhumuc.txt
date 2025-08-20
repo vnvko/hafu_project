@@ -1,170 +1,403 @@
-# 📁 Cấu trúc Dự Án HashtagShop
+# 📁 CẤU TRÚC THỦ MỤC DỰ ÁN HAFU HOUSE - WEBSITE BÁN HASHTAG
 
-## 🏗️ **Cấu trúc thư mục chi tiết:**
+## 🏗️ **TỔNG QUAN CẤU TRÚC**
+
+```
+hashtag-ecommerce/
+├── 📁 frontend/                          # React Frontend Application
+├── 📁 backend/                           # Node.js Backend API (Chưa tạo)
+├── 📁 docs/                             # Documentation (Chưa tạo)
+├── 📄 README.md                         # Project overview
+├── 📄 .gitignore                        # Git ignore rules
+└── 📄 package.json                      # Root package.json (nếu có)
+```
+
+---
+
+## ⚛️ **FRONTEND STRUCTURE (React + Vite)**
 
 ```
 frontend/
-├── public/
-│   ├── images/
-│   │   ├── logo/
-│   │   ├── products/
-│   │   ├── banners/
-│   │   └── icons/
-│   └── favicon.ico
-├── src/
-│   ├── components/
-│   │   ├── common/              # Components dùng chung
-│   │   │   ├── Loading.jsx
-│   │   │   ├── Modal.jsx
-│   │   │   ├── Toast.jsx
-│   │   │   ├── Pagination.jsx
-│   │   │   ├── SearchBox.jsx
-│   │   │   ├── FilterSidebar.jsx
-│   │   │   └── BackToTop.jsx
-│   │   ├── customer/            # Components cho khách hàng
-│   │   │   ├── layout/
-│   │   │   │   ├── Header.jsx
-│   │   │   │   ├── Footer.jsx
-│   │   │   │   ├── Navbar.jsx
-│   │   │   │   ├── Sidebar.jsx
-│   │   │   │   └── CustomerLayout.jsx
-│   │   │   ├── home/
-│   │   │   │   ├── HeroSection.jsx
-│   │   │   │   ├── FeaturedProducts.jsx
-│   │   │   │   ├── Categories.jsx
-│   │   │   │   ├── BlogSection.jsx
-│   │   │   │   ├── TestimonialSection.jsx
-│   │   │   │   └── StatsSection.jsx
-│   │   │   ├── products/
-│   │   │   │   ├── ProductCard.jsx
-│   │   │   │   ├── ProductGrid.jsx
-│   │   │   │   ├── ProductList.jsx
-│   │   │   │   ├── ProductDetail.jsx
-│   │   │   │   ├── ProductImages.jsx
-│   │   │   │   ├── ProductReviews.jsx
-│   │   │   │   └── RelatedProducts.jsx
-│   │   │   ├── cart/
-│   │   │   │   ├── CartItem.jsx
-│   │   │   │   ├── CartSummary.jsx
-│   │   │   │   ├── CartDrawer.jsx
-│   │   │   │   └── CheckoutForm.jsx
-│   │   │   ├── blog/
-│   │   │   │   ├── BlogCard.jsx
-│   │   │   │   ├── BlogDetail.jsx
-│   │   │   │   └── BlogSidebar.jsx
-│   │   │   └── auth/
-│   │   │       ├── LoginForm.jsx
-│   │   │       ├── RegisterForm.jsx
-│   │   │       └── UserProfile.jsx
-│   │   └── admin/               # Components cho admin
-│   │       ├── layout/
-│   │       │   ├── AdminHeader.jsx
-│   │       │   ├── AdminSidebar.jsx
-│   │       │   └── AdminLayout.jsx
-│   │       ├── dashboard/
-│   │       ├── products/
-│   │       ├── orders/
-│   │       ├── users/
-│   │       └── analytics/
-│   ├── pages/
-│   │   ├── customer/            # Trang khách hàng
-│   │   │   ├── HomePage.jsx
-│   │   │   ├── ProductsPage.jsx
-│   │   │   ├── ProductDetailPage.jsx
-│   │   │   ├── CartPage.jsx
-│   │   │   ├── CheckoutPage.jsx
-│   │   │   ├── BlogPage.jsx
-│   │   │   ├── BlogDetailPage.jsx
-│   │   │   ├── ContactPage.jsx
-│   │   │   ├── AboutPage.jsx
-│   │   │   ├── ProjectsPage.jsx
-│   │   │   ├── LoginPage.jsx
-│   │   │   ├── RegisterPage.jsx
-│   │   │   └── ProfilePage.jsx
-│   │   └── admin/               # Trang admin
-│   │       ├── DashboardPage.jsx
-│   │       ├── ProductsManagementPage.jsx
-│   │       ├── OrdersManagementPage.jsx
-│   │       ├── UsersManagementPage.jsx
-│   │       └── AnalyticsPage.jsx
-│   ├── hooks/                   # Custom hooks
-│   │   ├── useCart.js
-│   │   ├── useAuth.js
-│   │   ├── useProducts.js
-│   │   ├── useLocalStorage.js
-│   │   └── useDebounce.js
-│   ├── services/               # API services
-│   │   ├── api.js
-│   │   ├── authService.js
-│   │   ├── productService.js
-│   │   ├── orderService.js
-│   │   └── blogService.js
-│   ├── store/                  # Redux store
-│   │   ├── index.js
-│   │   ├── slices/
-│   │   │   ├── authSlice.js
-│   │   │   ├── cartSlice.js
-│   │   │   ├── productSlice.js
-│   │   │   └── uiSlice.js
-│   │   └── middleware/
-│   ├── utils/                  # Utility functions
-│   │   ├── constants.js
-│   │   ├── helpers.js
-│   │   ├── validation.js
-│   │   └── formatters.js
-│   ├── styles/                 # Additional styles
-│   │   ├── animations.css
-│   │   └── custom.css
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-└── package.json
+├── 📁 public/                           # Static assets
+│   ├── 📁 images/                       # Image assets (Cần tạo)
+│   │   ├── 📁 logo/                     # Logo files
+│   │   ├── 📁 products/                 # Product images
+│   │   ├── 📁 banners/                  # Banner images
+│   │   ├── 📁 icons/                    # Custom icons
+│   │   └── 📁 avatars/                  # User avatars
+│   ├── 🖼️ favicon.ico                    # Site favicon
+│   └── 🖼️ vite.svg                       # Vite logo
+│
+├── 📁 src/                              # Source code
+│   ├── 📁 components/                   # React Components
+│   │   ├── 📁 common/                   # Shared components
+│   │   │   ├── ⚛️ Loading.jsx             # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ Modal.jsx               # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ Toast.jsx               # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ Pagination.jsx          # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ SearchBox.jsx           # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ FilterSidebar.jsx       # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ BackToTop.jsx           # ⏳ (Cần tạo)
+│   │   │   └── ⚛️ FloatingButtons.jsx     # ✅ (Đã tạo)
+│   │   │
+│   │   ├── 📁 customer/                 # Customer-facing components
+│   │   │   ├── 📁 layout/               # Layout components
+│   │   │   │   ├── ⚛️ Header.jsx          # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ Footer.jsx          # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ Navbar.jsx          # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ Sidebar.jsx         # ⏳ (Cần tạo)
+│   │   │   │   └── ⚛️ CustomerLayout.jsx  # ✅ (Đã tạo)
+│   │   │   │
+│   │   │   ├── 📁 home/                 # Homepage components
+│   │   │   │   ├── ⚛️ HeroSection.jsx     # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ BrandBanner.jsx     # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ PromotionSlider.jsx # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ FeaturedProductsSlider.jsx # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ CategoryProductsSection.jsx # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ BlogSection.jsx     # ⏳ (Tích hợp trong HomePage)
+│   │   │   │   ├── ⚛️ TestimonialSection.jsx # ⏳ (Cần tạo)
+│   │   │   │   └── ⚛️ StatsSection.jsx    # ⏳ (Tích hợp trong HomePage)
+│   │   │   │
+│   │   │   ├── 📁 products/             # Product-related components
+│   │   │   │   ├── ⚛️ ProductCard.jsx     # ✅ (Đã tạo)
+│   │   │   │   ├── ⚛️ ProductGrid.jsx     # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ ProductList.jsx     # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ ProductDetail.jsx   # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ ProductImages.jsx   # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ ProductReviews.jsx  # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ RelatedProducts.jsx # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ ProductFilters.jsx  # ⏳ (Cần tạo)
+│   │   │   │   └── ⚛️ ProductSort.jsx     # ⏳ (Cần tạo)
+│   │   │   │
+│   │   │   ├── 📁 cart/                 # Shopping cart components
+│   │   │   │   ├── ⚛️ CartItem.jsx        # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ CartSummary.jsx     # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ CartDrawer.jsx      # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ CheckoutForm.jsx    # ⏳ (Cần tạo)
+│   │   │   │   └── ⚛️ PaymentMethods.jsx  # ⏳ (Cần tạo)
+│   │   │   │
+│   │   │   ├── 📁 blog/                 # Blog components
+│   │   │   │   ├── ⚛️ BlogCard.jsx        # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ BlogDetail.jsx      # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ BlogSidebar.jsx     # ⏳ (Cần tạo)
+│   │   │   │   └── ⚛️ BlogCategories.jsx  # ⏳ (Cần tạo)
+│   │   │   │
+│   │   │   ├── 📁 auth/                 # Authentication components
+│   │   │   │   ├── ⚛️ LoginForm.jsx       # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ RegisterForm.jsx    # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ UserProfile.jsx     # ⏳ (Cần tạo)
+│   │   │   │   ├── ⚛️ ForgotPassword.jsx  # ⏳ (Cần tạo)
+│   │   │   │   └── ⚛️ ChangePassword.jsx  # ⏳ (Cần tạo)
+│   │   │   │
+│   │   │   └── 📁 ui/                   # UI components
+│   │   │       ├── ⚛️ Button.jsx          # ⏳ (Cần tạo)
+│   │   │       ├── ⚛️ Input.jsx           # ⏳ (Cần tạo)
+│   │   │       ├── ⚛️ Select.jsx          # ⏳ (Cần tạo)
+│   │   │       ├── ⚛️ Checkbox.jsx        # ⏳ (Cần tạo)
+│   │   │       ├── ⚛️ Badge.jsx           # ⏳ (Cần tạo)
+│   │   │       └── ⚛️ Rating.jsx          # ⏳ (Cần tạo)
+│   │   │
+│   │   └── 📁 admin/                    # Admin panel components
+│   │       ├── 📁 layout/               # Admin layout
+│   │       │   ├── ⚛️ AdminHeader.jsx     # ⏳ (Cần tạo)
+│   │       │   ├── ⚛️ AdminSidebar.jsx    # ⏳ (Cần tạo)
+│   │       │   └── ⚛️ AdminLayout.jsx     # ⏳ (Cần tạo)
+│   │       │
+│   │       ├── 📁 dashboard/            # Dashboard components
+│   │       │   ├── ⚛️ Overview.jsx        # ⏳ (Cần tạo)
+│   │       │   ├── ⚛️ SalesChart.jsx      # ⏳ (Cần tạo)
+│   │       │   ├── ⚛️ RecentOrders.jsx    # ⏳ (Cần tạo)
+│   │       │   └── ⚛️ QuickActions.jsx    # ⏳ (Cần tạo)
+│   │       │
+│   │       ├── 📁 products/             # Admin product management
+│   │       │   ├── ⚛️ ProductTable.jsx    # ⏳ (Cần tạo)
+│   │       │   ├── ⚛️ ProductForm.jsx     # ⏳ (Cần tạo)
+│   │       │   └── ⚛️ BulkActions.jsx     # ⏳ (Cần tạo)
+│   │       │
+│   │       ├── 📁 orders/               # Order management
+│   │       │   ├── ⚛️ OrderTable.jsx      # ⏳ (Cần tạo)
+│   │       │   ├── ⚛️ OrderDetail.jsx     # ⏳ (Cần tạo)
+│   │       │   └── ⚛️ OrderStatus.jsx     # ⏳ (Cần tạo)
+│   │       │
+│   │       ├── 📁 users/                # User management
+│   │       │   ├── ⚛️ UserTable.jsx       # ⏳ (Cần tạo)
+│   │       │   ├── ⚛️ UserForm.jsx        # ⏳ (Cần tạo)
+│   │       │   └── ⚛️ RoleManagement.jsx  # ⏳ (Cần tạo)
+│   │       │
+│   │       └── 📁 analytics/            # Analytics & reports
+│   │           ├── ⚛️ SalesReport.jsx     # ⏳ (Cần tạo)
+│   │           ├── ⚛️ ProductAnalytics.jsx # ⏳ (Cần tạo)
+│   │           └── ⚛️ UserAnalytics.jsx   # ⏳ (Cần tạo)
+│   │
+│   ├── 📁 pages/                        # Page components
+│   │   ├── 📁 customer/                 # Customer pages
+│   │   │   ├── ⚛️ HomePage.jsx            # ✅ (Đã tạo)
+│   │   │   ├── ⚛️ ProductsPage.jsx        # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ ProductDetailPage.jsx   # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ CategoriesPage.jsx      # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ CartPage.jsx            # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ CheckoutPage.jsx        # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ BlogPage.jsx            # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ BlogDetailPage.jsx      # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ ContactPage.jsx         # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ AboutPage.jsx           # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ ProjectsPage.jsx        # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ LoginPage.jsx           # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ RegisterPage.jsx        # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ ProfilePage.jsx         # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ WishlistPage.jsx        # ⏳ (Cần tạo)
+│   │   │   ├── ⚛️ OrderHistoryPage.jsx    # ⏳ (Cần tạo)
+│   │   │   └── ⚛️ NotFoundPage.jsx        # ⏳ (Cần tạo)
+│   │   │
+│   │   └── 📁 admin/                    # Admin pages
+│   │       ├── ⚛️ DashboardPage.jsx       # ⏳ (Cần tạo)
+│   │       ├── ⚛️ ProductsManagementPage.jsx # ⏳ (Cần tạo)
+│   │       ├── ⚛️ OrdersManagementPage.jsx # ⏳ (Cần tạo)
+│   │       ├── ⚛️ UsersManagementPage.jsx # ⏳ (Cần tạo)
+│   │       ├── ⚛️ CategoriesManagementPage.jsx # ⏳ (Cần tạo)
+│   │       ├── ⚛️ BlogManagementPage.jsx  # ⏳ (Cần tạo)
+│   │       ├── ⚛️ AnalyticsPage.jsx       # ⏳ (Cần tạo)
+│   │       └── ⚛️ SettingsPage.jsx        # ⏳ (Cần tạo)
+│   │
+│   ├── 📁 hooks/                        # Custom React hooks
+│   │   ├── 🪝 useCart.js                  # ⏳ (Cần tạo)
+│   │   ├── 🪝 useAuth.js                  # ⏳ (Cần tạo)
+│   │   ├── 🪝 useProducts.js              # ⏳ (Cần tạo)
+│   │   ├── 🪝 useLocalStorage.js          # ⏳ (Cần tạo)
+│   │   ├── 🪝 useDebounce.js              # ⏳ (Cần tạo)
+│   │   ├── 🪝 usePagination.js            # ⏳ (Cần tạo)
+│   │   ├── 🪝 useSearch.js                # ⏳ (Cần tạo)
+│   │   └── 🪝 useApi.js                   # ⏳ (Cần tạo)
+│   │
+│   ├── 📁 services/                     # API services
+│   │   ├── 🌐 api.js                      # ⏳ (Cần tạo) - Base API config
+│   │   ├── 🌐 authService.js              # ⏳ (Cần tạo)
+│   │   ├── 🌐 productService.js           # ⏳ (Cần tạo)
+│   │   ├── 🌐 categoryService.js          # ⏳ (Cần tạo)
+│   │   ├── 🌐 orderService.js             # ⏳ (Cần tạo)
+│   │   ├── 🌐 userService.js              # ⏳ (Cần tạo)
+│   │   ├── 🌐 blogService.js              # ⏳ (Cần tạo)
+│   │   ├── 🌐 paymentService.js           # ⏳ (Cần tạo)
+│   │   └── 🌐 uploadService.js            # ⏳ (Cần tạo)
+│   │
+│   ├── 📁 store/                        # Redux store
+│   │   ├── 🏪 index.js                    # ⏳ (Cần tạo) - Store config
+│   │   ├── 📁 slices/                   # Redux slices
+│   │   │   ├── 🔄 authSlice.js            # ⏳ (Cần tạo)
+│   │   │   ├── 🔄 cartSlice.js            # ⏳ (Cần tạo)
+│   │   │   ├── 🔄 productSlice.js         # ⏳ (Cần tạo)
+│   │   │   ├── 🔄 categorySlice.js        # ⏳ (Cần tạo)
+│   │   │   ├── 🔄 orderSlice.js           # ⏳ (Cần tạo)
+│   │   │   ├── 🔄 uiSlice.js              # ⏳ (Cần tạo)
+│   │   │   └── 🔄 blogSlice.js            # ⏳ (Cần tạo)
+│   │   │
+│   │   └── 📁 middleware/               # Redux middleware
+│   │       ├── 🔧 apiMiddleware.js        # ⏳ (Cần tạo)
+│   │       └── 🔧 loggerMiddleware.js     # ⏳ (Cần tạo)
+│   │
+│   ├── 📁 utils/                        # Utility functions
+│   │   ├── 🛠️ constants.js               # ⏳ (Cần tạo) - App constants
+│   │   ├── 🛠️ helpers.js                 # ⏳ (Cần tạo) - Helper functions
+│   │   ├── 🛠️ validation.js              # ⏳ (Cần tạo) - Form validation
+│   │   ├── 🛠️ formatters.js              # ⏳ (Cần tạo) - Data formatters
+│   │   ├── 🛠️ dateUtils.js               # ⏳ (Cần tạo)
+│   │   ├── 🛠️ priceUtils.js              # ⏳ (Cần tạo)
+│   │   ├── 🛠️ imageUtils.js              # ⏳ (Cần tạo)
+│   │   └── 🛠️ seoUtils.js                # ⏳ (Cần tạo)
+│   │
+│   ├── 📁 styles/                       # Additional styles
+│   │   ├── 🎨 animations.css             # ⏳ (Cần tạo)
+│   │   ├── 🎨 custom.css                 # ⏳ (Cần tạo)
+│   │   └── 🎨 print.css                  # ⏳ (Cần tạo)
+│   │
+│   ├── ⚛️ App.jsx                        # ✅ (Đã tạo) - Main App component
+│   ├── ⚛️ main.jsx                       # ✅ (Đã tạo) - Entry point
+│   └── 🎨 index.css                      # ✅ (Đã tạo) - Global styles
+│
+├── 📄 index.html                        # ✅ (Đã tạo) - HTML template
+├── 📄 package.json                      # ✅ (Đã tạo) - Dependencies
+├── 📄 package-lock.json                 # ✅ (Tự động tạo)
+├── 📄 vite.config.js                    # ✅ (Đã tạo) - Vite config
+├── 📄 tailwind.config.js                # ✅ (Đã tạo) - Tailwind config
+├── 📄 postcss.config.js                 # ✅ (Đã tạo) - PostCSS config
+├── 📄 .gitignore                        # ✅ (Đã tạo)
+├── 📄 eslint.config.js                  # ✅ (Vite tự tạo)
+└── 📄 README.md                         # ⏳ (Cần cập nhật)
 ```
 
-## 🎨 **Theme Design System:**
+---
 
-### **Colors:**
-- **Primary**: Blue (#3B82F6)
-- **Background**: Pink/Rose tones
-- **Accent**: Purple/Violet
-- **Text**: Dark Gray
-- **Success**: Green
-- **Warning**: Orange
-- **Error**: Red
+## 🖥️ **BACKEND STRUCTURE (Dự kiến - Node.js + Express)**
 
-### **Components Philosophy:**
-- **Compact design** cho mobile
-- **Card-based layout** 
-- **Smooth animations**
-- **Responsive grid system**
-- **Touch-friendly buttons**
+```
+backend/
+├── 📁 config/                          # Configuration files
+│   ├── ⚙️ database.js                   # ⏳ Database connection
+│   ├── ⚙️ auth.js                       # ⏳ JWT config
+│   ├── ⚙️ upload.js                     # ⏳ File upload config
+│   └── ⚙️ environment.js               # ⏳ Environment variables
+│
+├── 📁 controllers/                     # Route controllers
+│   ├── 🎛️ authController.js            # ⏳ Authentication logic
+│   ├── 🎛️ productController.js         # ⏳ Product CRUD
+│   ├── 🎛️ categoryController.js        # ⏳ Category management
+│   ├── 🎛️ orderController.js           # ⏳ Order processing
+│   ├── 🎛️ userController.js            # ⏳ User management
+│   ├── 🎛️ blogController.js            # ⏳ Blog management
+│   ├── 🎛️ paymentController.js         # ⏳ Payment processing
+│   └── 🎛️ uploadController.js          # ⏳ File upload handling
+│
+├── 📁 middleware/                      # Express middleware
+│   ├── 🔧 auth.js                       # ⏳ Authentication middleware
+│   ├── 🔧 validation.js                # ⏳ Request validation
+│   ├── 🔧 upload.js                     # ⏳ File upload middleware
+│   ├── 🔧 rateLimit.js                  # ⏳ Rate limiting
+│   ├── 🔧 cors.js                       # ⏳ CORS configuration
+│   └── 🔧 errorHandler.js               # ⏳ Error handling
+│
+├── 📁 models/                          # Database models
+│   ├── 🗄️ User.js                       # ⏳ User model
+│   ├── 🗄️ Product.js                    # ⏳ Product model
+│   ├── 🗄️ Category.js                   # ⏳ Category model
+│   ├── 🗄️ Order.js                      # ⏳ Order model
+│   ├── 🗄️ OrderItem.js                  # ⏳ Order items
+│   ├── 🗄️ Review.js                     # ⏳ Product reviews
+│   ├── 🗄️ Blog.js                       # ⏳ Blog posts
+│   └── 🗄️ Payment.js                    # ⏳ Payment records
+│
+├── 📁 routes/                          # API routes
+│   ├── 🛤️ auth.js                       # ⏳ Authentication routes
+│   ├── 🛤️ products.js                   # ⏳ Product routes
+│   ├── 🛤️ categories.js                 # ⏳ Category routes
+│   ├── 🛤️ orders.js                     # ⏳ Order routes
+│   ├── 🛤️ users.js                      # ⏳ User routes
+│   ├── 🛤️ blog.js                       # ⏳ Blog routes
+│   ├── 🛤️ payments.js                   # ⏳ Payment routes
+│   ├── 🛤️ upload.js                     # ⏳ File upload routes
+│   └── 🛤️ admin.js                      # ⏳ Admin-only routes
+│
+├── 📁 services/                        # Business logic services
+│   ├── 🔧 authService.js                # ⏳ Authentication service
+│   ├── 🔧 emailService.js               # ⏳ Email notifications
+│   ├── 🔧 paymentService.js             # ⏳ Payment processing
+│   ├── 🔧 orderService.js               # ⏳ Order processing logic
+│   └── 🔧 analyticsService.js           # ⏳ Analytics calculations
+│
+├── 📁 utils/                           # Utility functions
+│   ├── 🛠️ helpers.js                    # ⏳ General helpers
+│   ├── 🛠️ validation.js                 # ⏳ Data validation
+│   ├── 🛠️ encryption.js                 # ⏳ Password hashing
+│   ├── 🛠️ jwt.js                        # ⏳ JWT utilities
+│   └── 🛠️ logger.js                     # ⏳ Logging utility
+│
+├── 📁 uploads/                         # File upload directory
+│   ├── 📁 products/                     # ⏳ Product images
+│   ├── 📁 avatars/                      # ⏳ User avatars
+│   └── 📁 documents/                    # ⏳ Documents
+│
+├── 📁 database/                        # Database related
+│   ├── 📁 migrations/                   # ⏳ Database migrations
+│   ├── 📁 seeders/                      # ⏳ Sample data
+│   └── 🗄️ schema.sql                    # ⏳ Database schema
+│
+├── 📁 tests/                           # Test files
+│   ├── 🧪 auth.test.js                  # ⏳ Authentication tests
+│   ├── 🧪 products.test.js              # ⏳ Product tests
+│   └── 🧪 orders.test.js                # ⏳ Order tests
+│
+├── 📄 app.js                           # ⏳ Express app setup
+├── 📄 server.js                        # ⏳ Server entry point
+├── 📄 package.json                     # ⏳ Backend dependencies
+├── 📄 .env.example                     # ⏳ Environment variables template
+├── 📄 .env                             # ⏳ Environment variables (gitignored)
+└── 📄 README.md                        # ⏳ Backend documentation
+```
 
-## 📋 **Quy tắc phát triển:**
+---
 
-### **Component Structure:**
-1. **Customer components** trong `/customer/`
-2. **Admin components** trong `/admin/` 
-3. **Common components** dùng chung
-4. **Page components** trong `/pages/`
+## 📚 **DOCUMENTATION STRUCTURE (Dự kiến)**
 
-### **Responsive Rules:**
-- **Mobile-first approach**
-- **Compact spacing** trên mobile
-- **Grid optimization** cho phone/tablet/desktop
-- **Touch targets** >= 44px
+```
+docs/
+├── 📁 api/                             # API Documentation
+│   ├── 📄 authentication.md            # ⏳ Auth endpoints
+│   ├── 📄 products.md                  # ⏳ Product endpoints
+│   ├── 📄 orders.md                    # ⏳ Order endpoints
+│   └── 📄 users.md                     # ⏳ User endpoints
+│
+├── 📁 frontend/                        # Frontend docs
+│   ├── 📄 components.md                # ⏳ Component documentation
+│   ├── 📄 styling.md                   # ⏳ Styling guidelines
+│   └── 📄 deployment.md                # ⏳ Deployment guide
+│
+├── 📁 backend/                         # Backend docs
+│   ├── 📄 database.md                  # ⏳ Database schema
+│   ├── 📄 api-design.md                # ⏳ API design principles
+│   └── 📄 security.md                  # ⏳ Security guidelines
+│
+├── 📁 design/                          # Design assets
+│   ├── 🎨 mockups/                     # ⏳ UI mockups
+│   ├── 🎨 wireframes/                  # ⏳ Wireframes
+│   └── 🎨 brand-guidelines.md          # ⏳ Brand guidelines
+│
+├── 📄 getting-started.md               # ⏳ Setup instructions
+├── 📄 contributing.md                  # ⏳ Contribution guidelines
+├── 📄 changelog.md                     # ⏳ Version history
+└── 📄 troubleshooting.md               # ⏳ Common issues
+```
 
-### **Code Organization:**
-- **Feature-based** structure
-- **Reusable components**
-- **Consistent naming**
-- **Props validation**
+---
 
-## 🚀 **Bước tiếp theo:**
+## 📊 **TRẠNG THÁI HOÀN THÀNH**
 
-1. **Tạo cấu trúc thư mục**
-2. **Setup theme colors**
-3. **Tạo CustomerLayout**
-4. **Tạo Header & Footer**
-5. **Tạo HomePage**
-6. **Tạo ProductCard** 
-7. **Setup routing**
+### ✅ **Đã hoàn thành (25%)**
+- Frontend project setup
+- Basic layout components (Header, Footer, CustomerLayout)
+- Homepage with all sections
+- Dark mode functionality
+- Responsive design foundation
+- TailwindCSS configuration
+- Component architecture
+
+### 🚧 **Đang làm (0%)**
+- Các trang customer còn lại
+- State management
+- API integration
+
+### ⏳ **Chưa bắt đầu (75%)**
+- Backend development
+- Database design
+- Admin panel
+- Advanced features
+- Testing
+- Deployment
+
+---
+
+## 📝 **GHI CHÚ**
+
+**Legend:**
+- ✅ = Đã hoàn thành
+- 🚧 = Đang làm
+- ⏳ = Chưa bắt đầu
+- 📁 = Thư mục
+- 📄 = File markdown/text
+- ⚛️ = React component
+- 🎨 = CSS/Style file
+- 🛠️ = Utility/Helper file
+- 🔧 = Service/Logic file
+- 🗄️ = Database/Model file
+- 🌐 = API/Network file
+- 🪝 = React hook
+- 🔄 = Redux slice
+- 🏪 = Store file
+- 🎛️ = Controller file
+- 🛤️ = Route file
+- 🧪 = Test file
+
+**Ưu tiên tiếp theo:**
+1. Hoàn thiện các trang customer (ProductsPage, ProductDetailPage, CartPage)
+2. Setup Redux store và state management
+3. Tạo API mock data
+4. Hoàn thiện responsive design
+5. Bắt đầu backend development
