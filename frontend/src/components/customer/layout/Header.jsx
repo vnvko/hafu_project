@@ -11,11 +11,17 @@ const Header = ({ darkMode, toggleDarkMode }) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 10);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+    setIsSearchOpen(false);
+  }, [location.pathname]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
@@ -51,40 +57,45 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               </span>
             </div>
             <div className="flex items-center space-x-2 sm:space-x-4">
-              <button
-                onClick={toggleDarkMode}
-                className="hover:bg-white/20 p-1 rounded transition-all"
-                title={darkMode ? 'Chế độ sáng' : 'Chế độ tối'}
-              >
-                <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'} text-sm`}></i>
-              </button>
-              <Link to="/login" className="hover:underline transition-all">
-                <i className="fas fa-sign-in-alt mr-1"></i>
-                <span className="hidden sm:inline">Đăng nhập</span>
-              </Link>
-              <Link to="/register" className="hover:underline transition-all">
-                <i className="fas fa-user-plus mr-1"></i>
-                <span className="hidden sm:inline">Đăng ký</span>
-              </Link>
+              <span className="hidden md:flex items-center">
+                <i className="fas fa-shipping-fast mr-1"></i>
+                Miễn phí vận chuyển
+              </span>
+              <span className="flex items-center">
+                <i className="fas fa-headset mr-1"></i>
+                24/7 Hỗ trợ
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Main Header */}
+      {/* Main Header - Restored original size */}
       <header className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
           ? darkMode 
-            ? 'bg-gray-900/95 backdrop-blur-lg shadow-xl border-b border-gray-700' 
-            : 'bg-white/95 backdrop-blur-lg shadow-xl border-b border-pink-100'
+            ? 'bg-gray-900/98 backdrop-blur-lg shadow-xl border-b border-gray-700' 
+            : 'bg-white/98 backdrop-blur-lg shadow-xl border-b border-pink-100'
           : darkMode
-            ? 'bg-gray-900/90 backdrop-blur-md shadow-lg'
-            : 'bg-white/90 backdrop-blur-md shadow-lg'
+            ? 'bg-gray-900/95 backdrop-blur-md shadow-lg'
+            : 'bg-white/95 backdrop-blur-md shadow-lg'
       }`}>
         <div className="container">
-          <div className="flex items-center justify-between py-2 sm:py-3">
-            {/* Logo */}
-            <Link to="/" className="flex items-center space-x-2 hover:scale-105 transition-transform">
+          <div className="flex items-center justify-between py-3 sm:py-4">
+            {/* Mobile Menu Toggle - LEFT SIDE */}
+            <button
+              onClick={toggleMenu}
+              className={`lg:hidden p-2.5 rounded-lg transition-all order-1 ${
+                darkMode 
+                  ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
+                  : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
+              }`}
+            >
+              <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
+            </button>
+
+            {/* Logo - CENTER ON MOBILE */}
+            <Link to="/" className="flex items-center space-x-2 hover:scale-105 transition-transform order-2 lg:order-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-lg sm:text-xl">H</span>
               </div>
@@ -92,7 +103,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
                 <h1 className={`text-lg sm:text-xl font-bold ${
                   darkMode ? 'text-pink-400' : 'text-gradient-pink'
                 }`}>
-                  HaFu Shop
+                  HaFu House
                 </h1>
                 <p className={`text-xs -mt-1 ${
                   darkMode ? 'text-gray-400' : 'text-gray-500'
@@ -103,7 +114,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6 order-3 lg:order-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -125,14 +136,14 @@ const Header = ({ darkMode, toggleDarkMode }) => {
             </nav>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden md:flex flex-1 max-w-sm mx-4 lg:mx-6">
+            <div className="hidden md:flex flex-1 max-w-sm mx-4 lg:mx-6 order-4 lg:order-3">
               <div className="relative w-full">
                 <input
                   type="text"
                   placeholder="Tìm kiếm hashtag..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`w-full px-4 py-2 pr-10 rounded-xl border transition-all text-sm ${
+                  className={`w-full px-4 py-2.5 pr-10 rounded-xl border transition-all text-sm ${
                     darkMode
                       ? 'bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-pink-400'
                       : 'bg-white/80 border-pink-200 text-gray-800 placeholder-gray-400 focus:border-pink-400'
@@ -146,12 +157,12 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center space-x-1 sm:space-x-2">
+            {/* Action Buttons - RIGHT SIDE */}
+            <div className="flex items-center space-x-1 sm:space-x-2 order-3 lg:order-4">
               {/* Search Toggle - Mobile */}
               <button
                 onClick={toggleSearch}
-                className={`md:hidden p-2 rounded-lg transition-all ${
+                className={`md:hidden p-2.5 rounded-lg transition-all ${
                   darkMode 
                     ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
                     : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
@@ -160,74 +171,57 @@ const Header = ({ darkMode, toggleDarkMode }) => {
                 <i className="fas fa-search text-lg"></i>
               </button>
 
-              {/* Wishlist */}
-              <button className={`relative p-2 rounded-lg transition-all ${
-                darkMode 
-                  ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
-                  : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
-              }`}>
-                <i className="fas fa-heart text-lg"></i>
-                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center animate-pulse">
-                  2
-                </span>
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={toggleDarkMode}
+                className={`p-2.5 rounded-lg transition-all ${
+                  darkMode 
+                    ? 'text-yellow-400 hover:text-yellow-300 hover:bg-gray-800' 
+                    : 'text-gray-600 hover:text-purple-600 hover:bg-purple-50'
+                }`}
+                title={darkMode ? 'Chế độ sáng' : 'Chế độ tối'}
+              >
+                <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'} text-lg`}></i>
               </button>
 
               {/* Cart */}
               <Link 
                 to="/cart" 
-                className={`relative p-2 rounded-lg transition-all ${
+                className={`relative p-2.5 rounded-lg transition-all ${
                   darkMode 
                     ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
                     : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
                 }`}
               >
                 <i className="fas fa-shopping-cart text-lg"></i>
-                <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center animate-pulse">
-                  {cartCount}
-                </span>
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center animate-pulse font-medium">
+                    {cartCount}
+                  </span>
+                )}
               </Link>
-
-              {/* User Profile */}
-              <button className={`hidden sm:flex p-2 rounded-lg transition-all ${
-                darkMode 
-                  ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
-                  : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
-              }`}>
-                <i className="fas fa-user text-lg"></i>
-              </button>
-
-              {/* Mobile Menu Toggle */}
-              <button
-                onClick={toggleMenu}
-                className={`lg:hidden p-2 rounded-lg transition-all ${
-                  darkMode 
-                    ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
-                    : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
-                }`}
-              >
-                <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
-              </button>
             </div>
           </div>
 
           {/* Mobile Search Bar */}
           {isSearchOpen && (
-            <div className="md:hidden pb-3 animate-slide-down">
+            <div className="md:hidden pb-4 animate-slide-down">
               <div className="relative">
                 <input
                   type="text"
                   placeholder="Tìm kiếm hashtag..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className={`w-full px-4 py-2 pr-10 rounded-xl border transition-all text-sm ${
+                  className={`w-full px-4 py-3 pr-10 rounded-xl border transition-all text-sm ${
                     darkMode
                       ? 'bg-gray-800 border-gray-600 text-white placeholder-gray-400'
                       : 'bg-white border-pink-200 text-gray-800 placeholder-gray-400'
                   } focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100`}
+                  autoFocus
                 />
                 <button 
                   onClick={toggleSearch}
-                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-1.5 rounded-lg transition-colors ${
+                  className={`absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-lg transition-colors ${
                     darkMode ? 'text-pink-400 hover:bg-gray-700' : 'text-pink-500 hover:bg-pink-50'
                   }`}
                 >
@@ -238,113 +232,106 @@ const Header = ({ darkMode, toggleDarkMode }) => {
           )}
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay - Fixed z-index */}
         {isMenuOpen && (
           <>
             <div 
-              className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+              className="fixed inset-0 bg-black/50 z-[100] lg:hidden"
               onClick={toggleMenu}
             ></div>
-            <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] z-50 transform transition-transform duration-300 ${
+            <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] z-[110] transform transition-transform duration-300 ${
               darkMode ? 'bg-gray-900' : 'bg-white'
-            } shadow-2xl`}>
-              <div className="p-4 h-full overflow-y-auto">
-                <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-lg">H</span>
+            } shadow-2xl overflow-hidden`}>
+              <div className="h-full flex flex-col">
+                {/* Mobile Menu Header */}
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">H</span>
+                      </div>
+                      <div>
+                        <h2 className={`text-lg font-bold ${darkMode ? 'text-pink-400' : 'text-gradient-pink'}`}>
+                          HaFu House
+                        </h2>
+                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          Hashtag chất lượng cao
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className={`text-lg font-bold ${darkMode ? 'text-pink-400' : 'text-gradient-pink'}`}>
-                        HaFu Shop
-                      </h2>
-                      <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                        Hashtag chất lượng cao
-                      </p>
-                    </div>
+                    <button
+                      onClick={toggleMenu}
+                      className={`p-2 rounded-lg transition-colors ${
+                        darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      }`}
+                    >
+                      <i className="fas fa-times text-xl"></i>
+                    </button>
                   </div>
-                  <button
-                    onClick={toggleMenu}
-                    className={`p-2 rounded-lg transition-colors ${
-                      darkMode ? 'text-gray-400 hover:text-white' : 'text-gray-600 hover:text-gray-900'
-                    }`}
-                  >
-                    <i className="fas fa-times text-xl"></i>
-                  </button>
                 </div>
 
-                <nav className="space-y-2">
-                  {navLinks.map((link, index) => (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      onClick={toggleMenu}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
-                        location.pathname === link.path
-                          ? darkMode
-                            ? 'text-pink-400 bg-pink-500/20'
-                            : 'text-pink-600 bg-pink-50'
-                          : darkMode
-                            ? 'text-gray-300 hover:text-white hover:bg-gray-800'
-                            : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
-                      }`}
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <i className={`${link.icon} text-lg w-5`}></i>
-                      <span className="font-medium">{link.name}</span>
-                    </Link>
-                  ))}
-                </nav>
+                {/* Mobile Menu Navigation */}
+                <div className="flex-1 overflow-y-auto p-6">
+                  <nav className="space-y-2">
+                    {navLinks.map((link, index) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        onClick={toggleMenu}
+                        className={`flex items-center space-x-4 px-4 py-4 rounded-xl transition-all ${
+                          location.pathname === link.path
+                            ? darkMode
+                              ? 'text-pink-400 bg-pink-500/20 border border-pink-500/30'
+                              : 'text-pink-600 bg-pink-50 border border-pink-200'
+                            : darkMode
+                              ? 'text-gray-300 hover:text-white hover:bg-gray-800'
+                              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                        }`}
+                        style={{ animationDelay: `${index * 50}ms` }}
+                      >
+                        <i className={`${link.icon} text-lg w-5 text-center`}></i>
+                        <span className="font-medium">{link.name}</span>
+                        <i className="fas fa-chevron-right text-xs ml-auto opacity-50"></i>
+                      </Link>
+                    ))}
+                  </nav>
+                </div>
 
-                <div className={`mt-8 pt-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                {/* Mobile Menu Footer */}
+                <div className={`p-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                   <div className="grid grid-cols-2 gap-4">
-                    <Link
-                      to="/profile"
-                      onClick={toggleMenu}
-                      className={`flex flex-col items-center space-y-2 p-3 rounded-xl transition-colors ${
+                    <button
+                      onClick={() => {
+                        toggleDarkMode();
+                        toggleMenu();
+                      }}
+                      className={`flex flex-col items-center space-y-2 p-4 rounded-xl transition-colors ${
                         darkMode 
-                          ? 'text-gray-300 hover:text-white hover:bg-gray-800' 
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'text-yellow-400 bg-gray-800 hover:bg-gray-700' 
+                          : 'text-purple-600 bg-purple-50 hover:bg-purple-100'
                       }`}
                     >
-                      <i className="fas fa-user text-xl"></i>
-                      <span className="text-xs">Tài khoản</span>
-                    </Link>
+                      <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'} text-xl`}></i>
+                      <span className="text-xs font-medium">
+                        {darkMode ? 'Sáng' : 'Tối'}
+                      </span>
+                    </button>
                     <Link
-                      to="/wishlist"
+                      to="/cart"
                       onClick={toggleMenu}
-                      className={`flex flex-col items-center space-y-2 p-3 rounded-xl transition-colors ${
+                      className={`flex flex-col items-center space-y-2 p-4 rounded-xl transition-colors relative ${
                         darkMode 
-                          ? 'text-gray-300 hover:text-white hover:bg-gray-800' 
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'text-pink-400 bg-gray-800 hover:bg-gray-700' 
+                          : 'text-pink-600 bg-pink-50 hover:bg-pink-100'
                       }`}
                     >
-                      <i className="fas fa-heart text-xl"></i>
-                      <span className="text-xs">Yêu thích</span>
-                    </Link>
-                    <Link
-                      to="/orders"
-                      onClick={toggleMenu}
-                      className={`flex flex-col items-center space-y-2 p-3 rounded-xl transition-colors ${
-                        darkMode 
-                          ? 'text-gray-300 hover:text-white hover:bg-gray-800' 
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                      }`}
-                    >
-                      <i className="fas fa-shopping-bag text-xl"></i>
-                      <span className="text-xs">Đơn hàng</span>
-                    </Link>
-                    <Link
-                      to="/support"
-                      onClick={toggleMenu}
-                      className={`flex flex-col items-center space-y-2 p-3 rounded-xl transition-colors ${
-                        darkMode 
-                          ? 'text-gray-300 hover:text-white hover:bg-gray-800' 
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                      }`}
-                    >
-                      <i className="fas fa-headset text-xl"></i>
-                      <span className="text-xs">Hỗ trợ</span>
+                      <i className="fas fa-shopping-cart text-xl"></i>
+                      <span className="text-xs font-medium">Giỏ hàng</span>
+                      {cartCount > 0 && (
+                        <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                          {cartCount}
+                        </span>
+                      )}
                     </Link>
                   </div>
                 </div>

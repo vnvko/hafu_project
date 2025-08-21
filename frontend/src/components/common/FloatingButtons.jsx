@@ -53,42 +53,44 @@ const FloatingButtons = ({ darkMode }) => {
 
   return (
     <>
-      {/* Contact Button */}
-      <div className="fixed bottom-20 right-4 z-50">
-        {/* Contact Options */}
-        <div className={`mb-4 space-y-3 transition-all duration-300 ${
+      {/* Contact Button - Right edge, contact options on left */}
+      <div className="fixed bottom-4 right-1 z-50">
+        {/* Contact Options - Show on LEFT side */}
+        <div className={`mb-3 space-y-2 transition-all duration-300 ${
           isContactOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
         }`}>
           {contacts.map((contact, index) => (
             <div
               key={contact.name}
-              className="flex items-center"
+              className="flex items-center justify-end"
               style={{ 
                 transitionDelay: isContactOpen ? `${index * 50}ms` : '0ms' 
               }}
             >
-              <div className={`mr-3 px-3 py-2 rounded-lg text-white text-sm whitespace-nowrap shadow-lg transition-all ${
-                darkMode ? 'bg-gray-800 border border-gray-600' : 'bg-white text-gray-800 border border-gray-200'
+              {/* Contact Label - LEFT side */}
+              <div className={`mr-2 px-2 py-1 rounded text-white text-xs whitespace-nowrap shadow-lg transition-all backdrop-blur-sm ${
+                darkMode ? 'bg-gray-800/90 border border-gray-600' : 'bg-white/90 text-gray-800 border border-gray-200'
               }`}>
                 {contact.value}
               </div>
+              {/* Contact Button - RIGHT side */}
               <a
                 href={contact.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`w-12 h-12 rounded-full ${contact.color} text-white flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-200`}
+                className={`w-10 h-10 rounded-full ${contact.color} text-white flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-200`}
                 title={contact.name}
               >
-                <i className={`${contact.icon} text-lg`}></i>
+                <i className={`${contact.icon} text-sm`}></i>
               </a>
             </div>
           ))}
         </div>
 
-        {/* Main Contact Button */}
+        {/* Main Contact Button - At right edge */}
         <button
           onClick={() => setIsContactOpen(!isContactOpen)}
-          className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ${
+          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ${
             isContactOpen
               ? 'bg-red-500 hover:bg-red-600 rotate-45'
               : darkMode
@@ -97,22 +99,22 @@ const FloatingButtons = ({ darkMode }) => {
           } text-white`}
           title={isContactOpen ? 'Đóng' : 'Liên hệ'}
         >
-          <i className={`fas ${isContactOpen ? 'fa-times' : 'fa-comments'} text-xl`}></i>
+          <i className={`fas ${isContactOpen ? 'fa-times' : 'fa-comments'} text-lg`}></i>
         </button>
       </div>
 
-      {/* Back to Top Button */}
+      {/* Back to Top Button - Above contact button */}
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-4 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-40 ${
+          className={`fixed bottom-20 right-1 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-40 ${
             darkMode
-              ? 'bg-gray-800 hover:bg-gray-700 text-white border border-gray-600'
-              : 'bg-white hover:bg-gray-50 text-gray-700 border border-gray-200'
-          }`}
+              ? 'bg-gray-800/90 hover:bg-gray-700 text-white border border-gray-600'
+              : 'bg-white/90 hover:bg-gray-50 text-gray-700 border border-gray-200'
+          } backdrop-blur-sm`}
           title="Lên đầu trang"
         >
-          <i className="fas fa-chevron-up text-lg"></i>
+          <i className="fas fa-chevron-up text-sm"></i>
         </button>
       )}
     </>
