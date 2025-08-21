@@ -2,20 +2,11 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import CustomerLayout from './components/customer/layout/CustomerLayout';
 import HomePage from './pages/customer/HomePage';
+import ProductsPage from './pages/customer/ProductsPage';
 
 // Import new pages with lazy loading
 const ProductDetailPage = React.lazy(() => import('./pages/customer/ProductDetailPage'));
 const CartPage = React.lazy(() => import('./pages/customer/CartPage'));
-
-// Temporary placeholder components
-const ProductsPage = () => (
-  <div className="section-padding-sm">
-    <div className="container">
-      <h1 className="text-lg sm:text-xl font-bold text-gradient-pink mb-3">Trang Sản Phẩm</h1>
-      <p className="text-gray-600 text-sm">Đang phát triển...</p>
-    </div>
-  </div>
-);
 
 const CategoriesPage = () => (
   <div className="section-padding-sm">

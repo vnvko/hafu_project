@@ -27,24 +27,34 @@
     }
   }
   
+  html {
+    min-height: 100vh;
+    transition: background 0.5s ease;
+  }
+  
   body {
     font-family: 'Inter', system-ui, sans-serif;
-    line-height: 1.5; /* Reduced from 1.6 */
+    line-height: 1.5;
     color: #374151;
     background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
     min-height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background 0.5s ease, color 0.3s ease;
   }
   
-  /* Dark mode styles */
+  /* Dark mode styles for body */
   .dark body {
     color: #e5e7eb;
     background: linear-gradient(135deg, #0f1419 0%, #1a1625 50%, #1e1b2e 100%);
   }
   
-  img {
-    max-width: 100%;
-    height: auto;
+  .dark html {
+    background: linear-gradient(135deg, #0f1419 0%, #1a1625 50%, #1e1b2e 100%);
+  }
+  
+  /* Ensure dark mode applies to all containers */
+  .dark #root {
+    min-height: 100vh;
+    background: transparent;
   }
 }
 

@@ -53,11 +53,11 @@ const FloatingButtons = ({ darkMode }) => {
 
   return (
     <>
-      {/* Contact Button - Right edge, contact options on left */}
-      <div className="fixed bottom-4 right-1 z-50">
-        {/* Contact Options - Show on LEFT side */}
+      {/* Contact Button - Fixed to RIGHT edge */}
+      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
+        {/* Contact Options - Show on LEFT side of button */}
         <div className={`mb-3 space-y-2 transition-all duration-300 ${
-          isContactOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+          isContactOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8 pointer-events-none'
         }`}>
           {contacts.map((contact, index) => (
             <div
@@ -68,29 +68,30 @@ const FloatingButtons = ({ darkMode }) => {
               }}
             >
               {/* Contact Label - LEFT side */}
-              <div className={`mr-2 px-2 py-1 rounded text-white text-xs whitespace-nowrap shadow-lg transition-all backdrop-blur-sm ${
-                darkMode ? 'bg-gray-800/90 border border-gray-600' : 'bg-white/90 text-gray-800 border border-gray-200'
+              <div className={`mr-3 px-3 py-2 rounded-lg text-white text-sm whitespace-nowrap shadow-lg transition-all backdrop-blur-sm max-w-[200px] ${
+                darkMode ? 'bg-gray-800/95 border border-gray-600' : 'bg-white/95 text-gray-800 border border-gray-200'
               }`}>
-                {contact.value}
+                <div className="font-medium">{contact.name}</div>
+                <div className="text-xs opacity-80">{contact.value}</div>
               </div>
               {/* Contact Button - RIGHT side */}
               <a
                 href={contact.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`w-10 h-10 rounded-full ${contact.color} text-white flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-200`}
+                className={`w-12 h-12 rounded-full ${contact.color} text-white flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-200 flex-shrink-0`}
                 title={contact.name}
               >
-                <i className={`${contact.icon} text-sm`}></i>
+                <i className={`${contact.icon} text-base`}></i>
               </a>
             </div>
           ))}
         </div>
 
-        {/* Main Contact Button - At right edge */}
+        {/* Main Contact Button - Fixed to right edge */}
         <button
           onClick={() => setIsContactOpen(!isContactOpen)}
-          className={`w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 ${
+          className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-110 ${
             isContactOpen
               ? 'bg-red-500 hover:bg-red-600 rotate-45'
               : darkMode
@@ -99,23 +100,32 @@ const FloatingButtons = ({ darkMode }) => {
           } text-white`}
           title={isContactOpen ? 'Đóng' : 'Liên hệ'}
         >
-          <i className={`fas ${isContactOpen ? 'fa-times' : 'fa-comments'} text-lg`}></i>
+          <i className={`fas ${isContactOpen ? 'fa-times' : 'fa-comments'} text-xl`}></i>
         </button>
       </div>
 
-      {/* Back to Top Button - Above contact button */}
+      {/* Back to Top Button - Above contact button, WORKING */}
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-20 right-1 w-10 h-10 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-40 ${
+          className={`fixed bottom-24 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-[1002] ${
             darkMode
               ? 'bg-gray-800/90 hover:bg-gray-700 text-white border border-gray-600'
               : 'bg-white/90 hover:bg-gray-50 text-gray-700 border border-gray-200'
           } backdrop-blur-sm`}
           title="Lên đầu trang"
+          style={{ pointerEvents: 'auto' }} // Đảm bảo button nhận sự kiện
         >
-          <i className="fas fa-chevron-up text-sm"></i>
+          <i className="fas fa-chevron-up text-base"></i>
         </button>
+      )}
+
+      {/* Contact Overlay - Click outside to close */}
+      {isContactOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-transparent"
+          onClick={() => setIsContactOpen(false)}
+        ></div>
       )}
     </>
   );

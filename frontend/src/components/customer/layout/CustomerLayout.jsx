@@ -21,13 +21,17 @@ const CustomerLayout = ({ children }) => {
     localStorage.setItem('darkMode', JSON.stringify(darkMode));
     document.documentElement.classList.toggle('dark', darkMode);
     
-    // Apply dark mode to body
+    // Apply dark mode to body and html
     if (darkMode) {
       document.body.style.background = 'linear-gradient(135deg, #0f1419 0%, #1a1625 50%, #1e1b2e 100%)';
       document.body.style.color = '#e5e7eb';
+      document.body.style.minHeight = '100vh';
+      document.documentElement.style.background = 'linear-gradient(135deg, #0f1419 0%, #1a1625 50%, #1e1b2e 100%)';
     } else {
       document.body.style.background = 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%)';
       document.body.style.color = '#374151';
+      document.body.style.minHeight = '100vh';
+      document.documentElement.style.background = 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%)';
     }
   }, [darkMode]);
 
@@ -41,22 +45,35 @@ const CustomerLayout = ({ children }) => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col transition-all duration-300 ${
+    <div className={`min-h-screen flex flex-col transition-all duration-500 ${
       darkMode 
-        ? 'dark bg-gray-900 text-white' 
+        ? 'dark bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white' 
         : 'bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 text-gray-900'
-    }`}>
+    }`} style={{
+      background: darkMode 
+        ? 'linear-gradient(135deg, #0f1419 0%, #1a1625 50%, #1e1b2e 100%)' 
+        : 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%)',
+      minHeight: '100vh'
+    }}>
       <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-      
-      <main className={`flex-1 transition-colors duration-300 ${
-        darkMode ? 'bg-gray-900' : ''
+
+      <main className={`flex-1 transition-all duration-500 ${
+        darkMode 
+          ? 'bg-transparent' 
+          : 'bg-transparent'
       }`}>
         {React.cloneElement(children, { darkMode })}
       </main>
-      
+
       <Footer darkMode={darkMode} />
-      
+
       <FloatingButtons darkMode={darkMode} />
+
+      {/* Thêm đoạn này để menu mobile luôn nằm trên mọi thứ */}
+      {/*
+        Đặt một portal hoặc một div với z-[9999] ở cuối layout,
+        hoặc chuyển phần menu mobile ra khỏi header và render ở đây nếu isMenuOpen.
+      */}
     </div>
   );
 };

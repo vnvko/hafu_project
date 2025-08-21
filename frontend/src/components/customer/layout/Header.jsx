@@ -70,7 +70,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
         </div>
       </div>
 
-      {/* Main Header - Restored original size */}
+      {/* Main Header */}
       <header className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
           ? darkMode 
@@ -82,20 +82,8 @@ const Header = ({ darkMode, toggleDarkMode }) => {
       }`}>
         <div className="container">
           <div className="flex items-center justify-between py-3 sm:py-4">
-            {/* Mobile Menu Toggle - LEFT SIDE */}
-            <button
-              onClick={toggleMenu}
-              className={`lg:hidden p-2.5 rounded-lg transition-all order-1 ${
-                darkMode 
-                  ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
-                  : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
-              }`}
-            >
-              <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
-            </button>
-
-            {/* Logo - CENTER ON MOBILE */}
-            <Link to="/" className="flex items-center space-x-2 hover:scale-105 transition-transform order-2 lg:order-1">
+            {/* Logo - LEFT SIDE */}
+            <Link to="/" className="flex items-center space-x-2 hover:scale-105 transition-transform order-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
                 <span className="text-white font-bold text-lg sm:text-xl">H</span>
               </div>
@@ -113,8 +101,8 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6 order-3 lg:order-2">
+            {/* Desktop Navigation - CENTER */}
+            <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6 order-2">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
@@ -136,7 +124,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
             </nav>
 
             {/* Search Bar - Desktop */}
-            <div className="hidden md:flex flex-1 max-w-sm mx-4 lg:mx-6 order-4 lg:order-3">
+            <div className="hidden md:flex flex-1 max-w-sm mx-4 lg:mx-6 order-3">
               <div className="relative w-full">
                 <input
                   type="text"
@@ -158,7 +146,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
             </div>
 
             {/* Action Buttons - RIGHT SIDE */}
-            <div className="flex items-center space-x-1 sm:space-x-2 order-3 lg:order-4">
+            <div className="flex items-center space-x-1 sm:space-x-2 order-4">
               {/* Search Toggle - Mobile */}
               <button
                 onClick={toggleSearch}
@@ -200,6 +188,18 @@ const Header = ({ darkMode, toggleDarkMode }) => {
                   </span>
                 )}
               </Link>
+
+              {/* Mobile Menu Toggle - FAR RIGHT */}
+              <button
+                onClick={toggleMenu}
+                className={`lg:hidden p-2.5 rounded-lg transition-all ${
+                  darkMode 
+                    ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800' 
+                    : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
+                }`}
+              >
+                <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-lg`}></i>
+              </button>
             </div>
           </div>
 
@@ -232,19 +232,19 @@ const Header = ({ darkMode, toggleDarkMode }) => {
           )}
         </div>
 
-        {/* Mobile Menu Overlay - Fixed z-index */}
+        {/* Mobile Menu Overlay - FIXED Z-INDEX */}
         {isMenuOpen && (
           <>
             <div 
-              className="fixed inset-0 bg-black/50 z-[100] lg:hidden"
+              className="fixed inset-0 bg-black/50 z-[9998] lg:hidden"
               onClick={toggleMenu}
             ></div>
-            <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] z-[110] transform transition-transform duration-300 ${
+            <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] z-[9999] transform transition-transform duration-300 ${
               darkMode ? 'bg-gray-900' : 'bg-white'
-            } shadow-2xl overflow-hidden`}>
+            } shadow-2xl overflow-y-auto`} style={{ boxShadow: '0 0 40px 0 rgba(0,0,0,0.15)' }}>
               <div className="h-full flex flex-col">
                 {/* Mobile Menu Header */}
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                <div className={`p-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
                   <div className="flex justify-between items-center">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
