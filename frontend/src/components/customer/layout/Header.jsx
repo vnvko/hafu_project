@@ -23,8 +23,61 @@ const Header = ({ darkMode, toggleDarkMode }) => {
     setIsSearchOpen(false);
   }, [location.pathname]);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    console.log('📱 Mobile menu toggle clicked!');
+    console.log('Current isMenuOpen:', isMenuOpen);
+    console.log('Will become:', !isMenuOpen);
+    
+    const newState = !isMenuOpen;
+    setIsMenuOpen(newState);
+    
+    // FIXED: Force body scroll prevention when menu open
+    if (newState) {
+      document.body.style.overflow = 'hidden';
+      console.log('🔒 Body scroll disabled');
+    } else {
+      document.body.style.overflow = '';
+      console.log('🔓 Body scroll enabled');
+    }
+  };
+  
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
+
+  // Debug mobile menu state with detailed logging
+  useEffect(() => {
+    console.log('📱 Mobile menu state changed:', isMenuOpen);
+    
+    if (isMenuOpen) {
+      console.log('✅ Mobile menu should be VISIBLE now');
+      
+      // Debug: Check if elements exist
+      setTimeout(() => {
+        const overlay = document.querySelector('[data-mobile-overlay]');
+        const menu = document.querySelector('[data-mobile-menu]');
+        
+        console.log('🔍 Debug check:');
+        console.log('- Overlay element found:', !!overlay);
+        console.log('- Menu element found:', !!menu);
+        
+        if (overlay) {
+          console.log('- Overlay styles:', {
+            position: overlay.style.position,
+            zIndex: overlay.style.zIndex,
+            display: getComputedStyle(overlay).display
+          });
+        }
+        
+        if (menu) {
+          console.log('- Menu styles:', {
+            position: menu.style.position,
+            zIndex: menu.style.zIndex,
+            transform: getComputedStyle(menu).transform,
+            right: menu.style.right
+          });
+        }
+      }, 100);
+    }
+  }, [isMenuOpen]);
 
   const navLinks = [
     { name: 'Trang chủ', path: '/', icon: 'fas fa-home' },
@@ -71,7 +124,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
       </div>
 
       {/* Main Header */}
-      <header className={`sticky top-0 z-50 transition-all duration-300 ${
+      <header className={`sticky top-0 z-40 transition-all duration-300 ${
         isScrolled 
           ? darkMode 
             ? 'bg-gray-900/98 backdrop-blur-lg shadow-xl border-b border-gray-700' 
@@ -161,7 +214,10 @@ const Header = ({ darkMode, toggleDarkMode }) => {
 
               {/* Dark Mode Toggle */}
               <button
-                onClick={toggleDarkMode}
+                onClick={() => {
+                  console.log('🌙 Dark mode button clicked in Header');
+                  toggleDarkMode();
+                }}
                 className={`p-2.5 rounded-lg transition-all ${
                   darkMode 
                     ? 'text-yellow-400 hover:text-yellow-300 hover:bg-gray-800' 
@@ -231,115 +287,147 @@ const Header = ({ darkMode, toggleDarkMode }) => {
             </div>
           )}
         </div>
+      </header>
 
-        {/* Mobile Menu Overlay - FIXED Z-INDEX */}
-        {isMenuOpen && (
-          <>
-            <div 
-              className="fixed inset-0 bg-black/50 z-[9998] lg:hidden"
-              onClick={toggleMenu}
-            ></div>
-            <div className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] z-[9999] transform transition-transform duration-300 ${
-              darkMode ? 'bg-gray-900' : 'bg-white'
-            } shadow-2xl overflow-y-auto`} style={{ boxShadow: '0 0 40px 0 rgba(0,0,0,0.15)' }}>
-              <div className="h-full flex flex-col">
-                {/* Mobile Menu Header */}
-                <div className={`p-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">H</span>
-                      </div>
-                      <div>
-                        <h2 className={`text-lg font-bold ${darkMode ? 'text-pink-400' : 'text-gradient-pink'}`}>
-                          HaFu House
-                        </h2>
-                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                          Hashtag chất lượng cao
-                        </p>
-                      </div>
+      {/* FIXED Mobile Menu - HIGHEST Z-INDEX WITH FORCED STYLES */}
+      {isMenuOpen && (
+        <>
+          {/* Overlay - FIXED with forced styles */}
+          <div 
+            className="lg:hidden"
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              zIndex: 9998,
+              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              backdropFilter: 'blur(4px)',
+              display: 'block'
+            }}
+            data-mobile-overlay="true"
+            onClick={toggleMenu}
+          ></div>
+          
+          {/* Menu - FIXED with forced styles */}
+          <div 
+            className={`lg:hidden ${darkMode ? 'bg-gray-900' : 'bg-white'}`}
+            style={{
+              position: 'fixed',
+              top: 0,
+              right: 0,
+              height: '100vh',
+              width: '320px',
+              maxWidth: '85vw',
+              zIndex: 9999,
+              backgroundColor: darkMode ? '#111827' : '#ffffff',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              transform: 'translateX(0)',
+              transition: 'transform 0.3s ease-in-out',
+              overflowY: 'auto',
+              display: 'block'
+            }}
+            data-mobile-menu="true"
+          >
+            <div className="h-full flex flex-col">
+              {/* Mobile Menu Header */}
+              <div className={`p-6 border-b ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <span className="text-white font-bold text-lg">H</span>
                     </div>
-                    <button
-                      onClick={toggleMenu}
-                      className={`p-2 rounded-lg transition-colors ${
-                        darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
-                      }`}
-                    >
-                      <i className="fas fa-times text-xl"></i>
-                    </button>
+                    <div>
+                      <h2 className={`text-lg font-bold ${darkMode ? 'text-pink-400' : 'text-gradient-pink'}`}>
+                        HaFu House
+                      </h2>
+                      <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                        Hashtag chất lượng cao
+                      </p>
+                    </div>
                   </div>
+                  <button
+                    onClick={toggleMenu}
+                    className={`p-2 rounded-lg transition-colors ${
+                      darkMode ? 'text-gray-400 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    }`}
+                  >
+                    <i className="fas fa-times text-xl"></i>
+                  </button>
                 </div>
+              </div>
 
-                {/* Mobile Menu Navigation */}
-                <div className="flex-1 overflow-y-auto p-6">
-                  <nav className="space-y-2">
-                    {navLinks.map((link, index) => (
-                      <Link
-                        key={link.path}
-                        to={link.path}
-                        onClick={toggleMenu}
-                        className={`flex items-center space-x-4 px-4 py-4 rounded-xl transition-all ${
-                          location.pathname === link.path
-                            ? darkMode
-                              ? 'text-pink-400 bg-pink-500/20 border border-pink-500/30'
-                              : 'text-pink-600 bg-pink-50 border border-pink-200'
-                            : darkMode
-                              ? 'text-gray-300 hover:text-white hover:bg-gray-800'
-                              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
-                        }`}
-                        style={{ animationDelay: `${index * 50}ms` }}
-                      >
-                        <i className={`${link.icon} text-lg w-5 text-center`}></i>
-                        <span className="font-medium">{link.name}</span>
-                        <i className="fas fa-chevron-right text-xs ml-auto opacity-50"></i>
-                      </Link>
-                    ))}
-                  </nav>
-                </div>
-
-                {/* Mobile Menu Footer */}
-                <div className={`p-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
-                  <div className="grid grid-cols-2 gap-4">
-                    <button
-                      onClick={() => {
-                        toggleDarkMode();
-                        toggleMenu();
-                      }}
-                      className={`flex flex-col items-center space-y-2 p-4 rounded-xl transition-colors ${
-                        darkMode 
-                          ? 'text-yellow-400 bg-gray-800 hover:bg-gray-700' 
-                          : 'text-purple-600 bg-purple-50 hover:bg-purple-100'
-                      }`}
-                    >
-                      <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'} text-xl`}></i>
-                      <span className="text-xs font-medium">
-                        {darkMode ? 'Sáng' : 'Tối'}
-                      </span>
-                    </button>
+              {/* Mobile Menu Navigation */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <nav className="space-y-2">
+                  {navLinks.map((link, index) => (
                     <Link
-                      to="/cart"
+                      key={link.path}
+                      to={link.path}
                       onClick={toggleMenu}
-                      className={`flex flex-col items-center space-y-2 p-4 rounded-xl transition-colors relative ${
-                        darkMode 
-                          ? 'text-pink-400 bg-gray-800 hover:bg-gray-700' 
-                          : 'text-pink-600 bg-pink-50 hover:bg-pink-100'
+                      className={`flex items-center space-x-4 px-4 py-4 rounded-xl transition-all ${
+                        location.pathname === link.path
+                          ? darkMode
+                            ? 'text-pink-400 bg-pink-500/20 border border-pink-500/30'
+                            : 'text-pink-600 bg-pink-50 border border-pink-200'
+                          : darkMode
+                            ? 'text-gray-300 hover:text-white hover:bg-gray-800'
+                            : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
                       }`}
+                      style={{ animationDelay: `${index * 50}ms` }}
                     >
-                      <i className="fas fa-shopping-cart text-xl"></i>
-                      <span className="text-xs font-medium">Giỏ hàng</span>
-                      {cartCount > 0 && (
-                        <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                          {cartCount}
-                        </span>
-                      )}
+                      <i className={`${link.icon} text-lg w-5 text-center`}></i>
+                      <span className="font-medium">{link.name}</span>
+                      <i className="fas fa-chevron-right text-xs ml-auto opacity-50"></i>
                     </Link>
-                  </div>
+                  ))}
+                </nav>
+              </div>
+
+              {/* Mobile Menu Footer */}
+              <div className={`p-6 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    onClick={() => {
+                      console.log('🌙 Dark mode toggle clicked in mobile menu');
+                      toggleDarkMode();
+                      toggleMenu();
+                    }}
+                    className={`flex flex-col items-center space-y-2 p-4 rounded-xl transition-colors ${
+                      darkMode 
+                        ? 'text-yellow-400 bg-gray-800 hover:bg-gray-700' 
+                        : 'text-purple-600 bg-purple-50 hover:bg-purple-100'
+                    }`}
+                  >
+                    <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'} text-xl`}></i>
+                    <span className="text-xs font-medium">
+                      {darkMode ? 'Sáng' : 'Tối'}
+                    </span>
+                  </button>
+                  <Link
+                    to="/cart"
+                    onClick={toggleMenu}
+                    className={`flex flex-col items-center space-y-2 p-4 rounded-xl transition-colors relative ${
+                      darkMode 
+                        ? 'text-pink-400 bg-gray-800 hover:bg-gray-700' 
+                        : 'text-pink-600 bg-pink-50 hover:bg-pink-100'
+                    }`}
+                  >
+                    <i className="fas fa-shopping-cart text-xl"></i>
+                    <span className="text-xs font-medium">Giỏ hàng</span>
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Link>
                 </div>
               </div>
             </div>
-          </>
-        )}
-      </header>
+          </div>
+        </>
+      )}
     </>
   );
 };

@@ -54,7 +54,7 @@ const FloatingButtons = ({ darkMode }) => {
   return (
     <>
       {/* Contact Button - Fixed to RIGHT edge */}
-      <div className="fixed bottom-4 right-4 z-50 flex flex-col items-end">
+      <div className="fixed bottom-24 right-4 z-50 flex flex-col items-end">
         {/* Contact Options - Show on LEFT side of button */}
         <div className={`mb-3 space-y-2 transition-all duration-300 ${
           isContactOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8 pointer-events-none'
@@ -108,7 +108,7 @@ const FloatingButtons = ({ darkMode }) => {
       {showBackToTop && (
         <button
           onClick={scrollToTop}
-          className={`fixed bottom-24 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-[1002] ${
+          className={`fixed bottom-6 right-4 w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 hover:scale-110 z-[1002] ${
             darkMode
               ? 'bg-gray-800/90 hover:bg-gray-700 text-white border border-gray-600'
               : 'bg-white/90 hover:bg-gray-50 text-gray-700 border border-gray-200'
