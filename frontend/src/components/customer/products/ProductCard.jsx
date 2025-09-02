@@ -5,14 +5,21 @@ const ProductCard = ({ product, layout = 'grid' }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
+  // Backend schema mapping
   const {
     id,
+    slug,
     name,
+    price_min,
+    thumbnail_url,
+    rating_avg = 0,
+    sold_count = 0,
+    // Optional frontend fields for compatibility
     price,
     originalPrice,
     image,
-    rating = 4.5,
-    totalSold = 0,
+    rating,
+    totalSold,
     discount,
     category,
     tags = [],
@@ -21,8 +28,13 @@ const ProductCard = ({ product, layout = 'grid' }) => {
     isBestSeller = false
   } = product;
 
+  const normalizedPrice = typeof price_min === 'number' ? price_min : (typeof price === 'number' ? price : 0);
+  const normalizedImage = thumbnail_url || image;
+  const normalizedRating = typeof rating_avg === 'number' && rating_avg > 0 ? rating_avg : (rating || 0);
+  const normalizedSold = typeof sold_count === 'number' && sold_count > 0 ? sold_count : (totalSold || 0);
+
   const discountPercentage = originalPrice 
-    ? Math.round(((originalPrice - price) / originalPrice) * 100)
+    ? Math.round(((originalPrice - normalizedPrice) / originalPrice) * 100)
     : discount;
 
   const handleWishlistToggle = (e) => {
@@ -32,14 +44,13 @@ const ProductCard = ({ product, layout = 'grid' }) => {
 
   const handleAddToCart = (e) => {
     e.preventDefault();
-    // Handle add to cart logic
     console.log('Added to cart:', product);
   };
 
   const renderRatingStars = () => {
     const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
+    const fullStars = Math.floor(normalizedRating);
+    const hasHalfStar = normalizedRating % 1 !== 0;
 
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
@@ -53,12 +64,14 @@ const ProductCard = ({ product, layout = 'grid' }) => {
     return stars;
   };
 
+  const productLink = `/products/${slug || id}`;
+
   if (layout === 'list') {
     return (
-      <Link to={`/products/${id}`} className="product-card flex p-3 sm:p-4">
+      <Link to={productLink} className="product-card flex p-3 sm:p-4">
         <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0">
           <img
-            src={image}
+            src={normalizedImage}
             alt={name}
             className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
             onLoad={() => setImageLoaded(true)}
@@ -82,15 +95,15 @@ const ProductCard = ({ product, layout = 'grid' }) => {
           
           <div className="flex items-center space-x-1 text-xs">
             {renderRatingStars()}
-            <span className="text-gray-500">({rating})</span>
+            <span className="text-gray-500">({normalizedRating})</span>
           </div>
 
-          <p className="text-xs text-gray-500">Đã bán {totalSold}</p>
+          <p className="text-xs text-gray-500">Đã bán {normalizedSold}</p>
 
           <div className="flex items-center justify-between">
             <div className="space-y-1">
               <div className="product-price text-sm font-bold">
-                {price.toLocaleString('vi-VN')}đ
+                {normalizedPrice.toLocaleString('vi-VN')}đ
               </div>
               {originalPrice && (
                 <div className="product-price-old text-xs">
@@ -113,12 +126,12 @@ const ProductCard = ({ product, layout = 'grid' }) => {
 
   return (
     <div className="product-card group">
-      <Link to={`/products/${id}`} className="block">
+      <Link to={productLink} className="block">
         {/* Image Container */}
         <div className="relative mb-2 sm:mb-3">
           <div className="aspect-square relative overflow-hidden rounded-lg">
             <img
-              src={image}
+              src={normalizedImage}
               alt={name}
               className="product-image"
               onLoad={() => setImageLoaded(true)}
@@ -191,9 +204,9 @@ const ProductCard = ({ product, layout = 'grid' }) => {
             <div className="flex space-x-0.5">
               {renderRatingStars()}
             </div>
-            <span className="text-gray-500">({rating})</span>
+            <span className="text-gray-500">({normalizedRating})</span>
             <span className="text-gray-300">•</span>
-            <span className="text-gray-500">Đã bán {totalSold}</span>
+            <span className="text-gray-500">Đã bán {normalizedSold}</span>
           </div>
 
           {/* Tags */}
@@ -214,7 +227,7 @@ const ProductCard = ({ product, layout = 'grid' }) => {
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <div className="product-price text-sm sm:text-base font-bold">
-                {price.toLocaleString('vi-VN')}đ
+                {normalizedPrice.toLocaleString('vi-VN')}đ
               </div>
               {originalPrice && (
                 <div className="product-price-old text-xs">

@@ -1,247 +1,68 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import ProductCard from '../../components/customer/products/ProductCard';
+import { fetchAllProducts } from '../../store/slices/productSlice';
+import { fetchCategories } from '../../store/slices/categorySlice';
 
 const ProductsPage = ({ darkMode }) => {
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { slug } = useParams();
+  const dispatch = useDispatch();
+  const { allProducts } = useSelector((state) => state.products);
+  const { items: categories } = useSelector((state) => state.categories);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState('popular');
-  const [filterCategory, setFilterCategory] = useState('all');
+  const [filterCategory, setFilterCategory] = useState(slug || 'all');
   const [priceRange, setPriceRange] = useState([0, 500000]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const productsPerPage = 20; // 4 rows x 5 products = 20 per page
+  const productsPerPage = 20;
 
-  // Mock data - sẽ thay thế bằng API call
+  // Fetch categories khi component mount
   useEffect(() => {
-    const mockProducts = [
-      {
-        id: 1,
-        name: "Hashtag Marketing Pro 2024",
-        price: 299000,
-        originalPrice: 399000,
-        image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=300&h=300&fit=crop",
-        category: "Marketing",
-        rating: 4.9,
-        totalSold: 1250,
-        tags: ["#marketing", "#business", "#growth"],
-        isHot: true,
-        isNew: false,
-        isBestSeller: true
-      },
-      {
-        id: 2,
-        name: "Hashtag Thời Trang Trendy",
-        price: 199000,
-        originalPrice: 249000,
-        image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300&h=300&fit=crop",
-        category: "Fashion",
-        rating: 4.7,
-        totalSold: 890,
-        tags: ["#fashion", "#style", "#outfit"],
-        isHot: false,
-        isNew: true,
-        isBestSeller: false
-      },
-      {
-        id: 3,
-        name: "Hashtag F&B Premium",
-        price: 249000,
-        originalPrice: 329000,
-        image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=300&h=300&fit=crop",
-        category: "Food",
-        rating: 4.8,
-        totalSold: 2100,
-        tags: ["#food", "#restaurant", "#delicious"],
-        isHot: true,
-        isNew: false,
-        isBestSeller: true
-      },
-      {
-        id: 4,
-        name: "Hashtag Du Lịch Explorer",
-        price: 179000,
-        originalPrice: 229000,
-        image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=300&h=300&fit=crop",
-        category: "Travel",
-        rating: 4.6,
-        totalSold: 675,
-        tags: ["#travel", "#explore", "#adventure"],
-        isHot: false,
-        isNew: false,
-        isBestSeller: false
-      },
-      {
-        id: 5,
-        name: "Hashtag Beauty & Skincare",
-        price: 319000,
-        originalPrice: 429000,
-        image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300&h=300&fit=crop",
-        category: "Beauty",
-        rating: 4.9,
-        totalSold: 1456,
-        tags: ["#beauty", "#skincare", "#cosmetics"],
-        isHot: true,
-        isNew: true,
-        isBestSeller: true
-      },
-      {
-        id: 6,
-        name: "Hashtag Tech & Startup",
-        price: 269000,
-        originalPrice: 339000,
-        image: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=300&h=300&fit=crop",
-        category: "Technology",
-        rating: 4.5,
-        totalSold: 543,
-        tags: ["#tech", "#startup", "#innovation"],
-        isHot: false,
-        isNew: false,
-        isBestSeller: false
-      },
-      {
-        id: 7,
-        name: "Hashtag Fitness & Health",
-        price: 189000,
-        originalPrice: 239000,
-        image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=300&h=300&fit=crop",
-        category: "Fitness",
-        rating: 4.4,
-        totalSold: 789,
-        tags: ["#fitness", "#health", "#workout"],
-        isHot: false,
-        isNew: true,
-        isBestSeller: false
-      },
-      {
-        id: 8,
-        name: "Hashtag Education & Learning",
-        price: 159000,
-        originalPrice: 199000,
-        image: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=300&h=300&fit=crop",
-        category: "Education",
-        rating: 4.3,
-        totalSold: 432,
-        tags: ["#education", "#learning", "#skills"],
-        isHot: false,
-        isNew: false,
-        isBestSeller: false
-      },
-      {
-        id: 9,
-        name: "Hashtag Real Estate Pro",
-        price: 229000,
-        originalPrice: 289000,
-        image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=300&h=300&fit=crop",
-        category: "Real Estate",
-        rating: 4.6,
-        totalSold: 321,
-        tags: ["#realestate", "#property", "#investment"],
-        isHot: false,
-        isNew: false,
-        isBestSeller: false
-      },
-      {
-        id: 10,
-        name: "Hashtag Entertainment & Events",
-        price: 149000,
-        originalPrice: 189000,
-        image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=300&h=300&fit=crop",
-        category: "Entertainment",
-        rating: 4.2,
-        totalSold: 654,
-        tags: ["#entertainment", "#events", "#fun"],
-        isHot: false,
-        isNew: false,
-        isBestSeller: false
-      },
-      // Thêm 10 sản phẩm nữa để có 20 sản phẩm
-      ...Array.from({ length: 10 }, (_, i) => ({
-        id: 11 + i,
-        name: `Hashtag Package ${11 + i}`,
-        price: 150000 + (i * 20000),
-        originalPrice: 200000 + (i * 30000),
-        image: `https://images.unsplash.com/photo-${1500000000000 + i}?w=300&h=300&fit=crop`,
-        category: ["Marketing", "Fashion", "Food", "Travel", "Beauty"][i % 5],
-        rating: 4.0 + (Math.random() * 0.9),
-        totalSold: 100 + (i * 50),
-        tags: ["#hashtag", "#trending", "#viral"],
-        isHot: i % 3 === 0,
-        isNew: i % 4 === 0,
-        isBestSeller: i % 5 === 0
-      }))
-    ];
+    if (categories.length === 0) {
+      dispatch(fetchCategories());
+    }
+  }, [dispatch, categories.length]);
 
-    setTimeout(() => {
-      setProducts(mockProducts);
-      setFilteredProducts(mockProducts);
-      setLoading(false);
-    }, 1000);
-  }, []);
-
-  // Filter and sort logic
+  // reset khi slug thay đổi
   useEffect(() => {
-    let filtered = [...products];
-
-    // Category filter
-    if (filterCategory !== 'all') {
-      filtered = filtered.filter(product => 
-        product.category.toLowerCase() === filterCategory.toLowerCase()
-      );
-    }
-
-    // Price range filter
-    filtered = filtered.filter(product => 
-      product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
-
-    // Search filter
-    if (searchQuery) {
-      filtered = filtered.filter(product =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      );
-    }
-
-    // Sort
-    switch (sortBy) {
-      case 'price-asc':
-        filtered.sort((a, b) => a.price - b.price);
-        break;
-      case 'price-desc':
-        filtered.sort((a, b) => b.price - a.price);
-        break;
-      case 'rating':
-        filtered.sort((a, b) => b.rating - a.rating);
-        break;
-      case 'newest':
-        filtered.sort((a, b) => b.id - a.id);
-        break;
-      case 'popular':
-      default:
-        filtered.sort((a, b) => b.totalSold - a.totalSold);
-        break;
-    }
-
-    setFilteredProducts(filtered);
+    setFilterCategory(slug || 'all');
     setCurrentPage(1);
-  }, [products, filterCategory, priceRange, searchQuery, sortBy]);
+  }, [slug]);
 
-  const categories = [
-    { value: 'all', label: 'Tất cả', count: products.length },
-    { value: 'marketing', label: 'Marketing', count: products.filter(p => p.category === 'Marketing').length },
-    { value: 'fashion', label: 'Thời trang', count: products.filter(p => p.category === 'Fashion').length },
-    { value: 'food', label: 'Ẩm thực', count: products.filter(p => p.category === 'Food').length },
-    { value: 'travel', label: 'Du lịch', count: products.filter(p => p.category === 'Travel').length },
-    { value: 'beauty', label: 'Làm đẹp', count: products.filter(p => p.category === 'Beauty').length },
-  ];
+  useEffect(() => {
+    const sortMap = {
+      'price-asc': 'price_asc',
+      'price-desc': 'price_desc',
+      'rating': 'name_asc',
+      'newest': 'created_desc',
+      'popular': 'created_desc',
+    };
 
-  // Pagination
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const startIndex = (currentPage - 1) * productsPerPage;
-  const currentProducts = filteredProducts.slice(startIndex, startIndex + productsPerPage);
+    const params = {
+      page: currentPage,
+      limit: productsPerPage,
+      search: searchQuery,
+      sort: sortMap[sortBy] || 'created_desc',
+    };
+
+    // chỉ gửi minPrice/maxPrice khi người dùng thay đổi khỏi mặc định
+    if (priceRange[0] !== 0) params.minPrice = priceRange[0];
+    if (priceRange[1] !== 500000) params.maxPrice = priceRange[1];
+
+    if (filterCategory !== 'all') {
+      params.category = filterCategory; // backend đọc req.query.category là slug
+    }
+
+    dispatch(fetchAllProducts(params));
+  }, [dispatch, currentPage, sortBy, filterCategory, priceRange, searchQuery]);
+
+  const loading = allProducts.loading;
+  const error = allProducts.error;
+  const items = allProducts.data || [];
+  const pagination = allProducts.pagination || { total: 0, totalPages: 0, currentPage: 1, perPage: productsPerPage };
 
   const LoadingSkeleton = () => (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
@@ -276,7 +97,7 @@ const ProductsPage = ({ darkMode }) => {
             </Link>
             <i className="fas fa-chevron-right text-gray-400"></i>
             <span className={darkMode ? 'text-gray-400' : 'text-gray-500'}>
-              Sản phẩm
+              Sản phẩm {filterCategory !== 'all' ? `• ${filterCategory}` : ''}
             </span>
           </nav>
         </div>
@@ -290,12 +111,12 @@ const ProductsPage = ({ darkMode }) => {
               darkMode ? 'text-white' : 'text-gray-900'
             }`}>
               <i className="fas fa-tags mr-2 text-pink-500"></i>
-              Tất cả sản phẩm
+              {filterCategory !== 'all' ? `Danh mục: ${filterCategory}` : 'Tất cả sản phẩm'}
             </h1>
             <p className={`text-sm ${
               darkMode ? 'text-gray-400' : 'text-gray-600'
             }`}>
-              Tìm thấy {filteredProducts.length} sản phẩm
+              {loading ? 'Đang tải...' : `Tìm thấy ${pagination.total || items.length} sản phẩm`}
             </p>
           </div>
           
@@ -368,12 +189,29 @@ const ProductsPage = ({ darkMode }) => {
                   Danh mục
                 </label>
                 <div className="space-y-2">
+                  {/* Tất cả danh mục */}
+                  <button
+                    onClick={() => setFilterCategory('all')}
+                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                      filterCategory === 'all'
+                        ? darkMode
+                          ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
+                          : 'bg-pink-50 text-pink-600 border border-pink-200'
+                        : darkMode
+                          ? 'text-gray-300 hover:bg-gray-700'
+                          : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span>Tất cả</span>
+                  </button>
+                  
+                  {/* Danh mục từ database */}
                   {categories.map((category) => (
                     <button
-                      key={category.value}
-                      onClick={() => setFilterCategory(category.value)}
+                      key={category.slug}
+                      onClick={() => setFilterCategory(category.slug)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                        filterCategory === category.value
+                        filterCategory === category.slug
                           ? darkMode
                             ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30'
                             : 'bg-pink-50 text-pink-600 border border-pink-200'
@@ -382,12 +220,7 @@ const ProductsPage = ({ darkMode }) => {
                             : 'text-gray-700 hover:bg-gray-50'
                       }`}
                     >
-                      <span>{category.label}</span>
-                      <span className={`text-xs px-2 py-1 rounded-full ${
-                        darkMode ? 'bg-gray-700 text-gray-400' : 'bg-gray-100 text-gray-500'
-                      }`}>
-                        {category.count}
-                      </span>
+                      <span>{category.name}</span>
                     </button>
                   ))}
                 </div>
@@ -467,11 +300,26 @@ const ProductsPage = ({ darkMode }) => {
           <div className="lg:col-span-3">
             {loading ? (
               <LoadingSkeleton />
+            ) : error ? (
+              <div className="text-center py-12">
+                <div className={`w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center ${
+                  darkMode ? 'bg-gray-800' : 'bg-gray-100'
+                }`}>
+                  <i className="fas fa-exclamation-triangle text-3xl text-red-500"></i>
+                </div>
+                <h3 className={`text-xl font-semibold mb-2 ${
+                  darkMode ? 'text-white' : 'text-gray-900'
+                }`}>
+                  Lỗi tải sản phẩm
+                </h3>
+                <p className={`text-gray-500 mb-4`}>
+                  {error}
+                </p>
+              </div>
             ) : (
               <>
-                {/* Products Grid - Optimized for mobile with 5 columns on desktop */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
-                  {currentProducts.map((product) => (
+                  {items.map((product) => (
                     <ProductCard 
                       key={product.id} 
                       product={product} 
@@ -480,8 +328,7 @@ const ProductsPage = ({ darkMode }) => {
                   ))}
                 </div>
 
-                {/* Empty State */}
-                {filteredProducts.length === 0 && (
+                {items.length === 0 && (
                   <div className="text-center py-12">
                     <div className={`w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center ${
                       darkMode ? 'bg-gray-800' : 'bg-gray-100'
@@ -501,6 +348,8 @@ const ProductsPage = ({ darkMode }) => {
                         setFilterCategory('all');
                         setPriceRange([0, 500000]);
                         setSearchQuery('');
+                        setSortBy('popular');
+                        setCurrentPage(1);
                       }}
                       className="btn-primary px-6 py-3"
                     >
@@ -510,12 +359,11 @@ const ProductsPage = ({ darkMode }) => {
                   </div>
                 )}
 
-                {/* Pagination */}
-                {totalPages > 1 && (
+                {pagination.totalPages > 1 && (
                   <div className="flex justify-center mt-8">
                     <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => setCurrentPage(currentPage - 1)}
+                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
                         className={`px-3 py-2 rounded-lg transition-colors ${
                           currentPage === 1
@@ -525,31 +373,27 @@ const ProductsPage = ({ darkMode }) => {
                       >
                         <i className="fas fa-chevron-left"></i>
                       </button>
-                      
-                      {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                        const pageNum = currentPage <= 3 ? i + 1 : currentPage - 2 + i;
-                        if (pageNum > totalPages) return null;
-                        
-                        return (
-                          <button
-                            key={pageNum}
-                            onClick={() => setCurrentPage(pageNum)}
-                            className={`px-3 py-2 rounded-lg transition-colors ${
-                              currentPage === pageNum
-                                ? 'bg-pink-500 text-white'
-                                : darkMode ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
-                            }`}
-                          >
-                            {pageNum}
-                          </button>
-                        );
-                      })}
-                      
+                      {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).slice(
+                        Math.max(0, Math.min(currentPage - 3, (pagination.totalPages || 1) - 5)),
+                        Math.max(5, Math.min((pagination.totalPages || 1), currentPage + 2))
+                      ).map((pageNum) => (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-3 py-2 rounded-lg transition-colors ${
+                            currentPage === pageNum
+                              ? 'bg-pink-500 text-white'
+                              : darkMode ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      ))}
                       <button
-                        onClick={() => setCurrentPage(currentPage + 1)}
-                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage((p) => Math.min(pagination.totalPages, p + 1))}
+                        disabled={currentPage === pagination.totalPages}
                         className={`px-3 py-2 rounded-lg transition-colors ${
-                          currentPage === totalPages
+                          currentPage === pagination.totalPages
                             ? darkMode ? 'bg-gray-800 text-gray-600 cursor-not-allowed' : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                             : darkMode ? 'bg-gray-700 text-white hover:bg-gray-600' : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
                         }`}

@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategories } from '../../../store/slices/categorySlice';
+// import LoginModal from '../auth/LoginModal';
+import { logout } from '../../../store/slices/authSlice';
 
 const Header = ({ darkMode, toggleDarkMode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -7,7 +11,17 @@ const Header = ({ darkMode, toggleDarkMode }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(3);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const location = useLocation();
+  
+  const dispatch = useDispatch();
+  const { items: categories, loading: categoriesLoading } = useSelector((state) => state.categories);
+  const { token, user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    // Fetch categories khi component mount
+    dispatch(fetchCategories());
+  }, [dispatch]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,56 +38,32 @@ const Header = ({ darkMode, toggleDarkMode }) => {
   }, [location.pathname]);
 
   const toggleMenu = () => {
-    console.log('📱 Mobile menu toggle clicked!');
-    console.log('Current isMenuOpen:', isMenuOpen);
-    console.log('Will become:', !isMenuOpen);
-    
     const newState = !isMenuOpen;
     setIsMenuOpen(newState);
     
-    // FIXED: Force body scroll prevention when menu open
     if (newState) {
       document.body.style.overflow = 'hidden';
-      console.log('🔒 Body scroll disabled');
     } else {
       document.body.style.overflow = '';
-      console.log('🔓 Body scroll enabled');
     }
   };
   
   const toggleSearch = () => setIsSearchOpen(!isSearchOpen);
 
-  // Debug mobile menu state with detailed logging
   useEffect(() => {
-    console.log('📱 Mobile menu state changed:', isMenuOpen);
     
     if (isMenuOpen) {
-      console.log('✅ Mobile menu should be VISIBLE now');
       
-      // Debug: Check if elements exist
       setTimeout(() => {
         const overlay = document.querySelector('[data-mobile-overlay]');
         const menu = document.querySelector('[data-mobile-menu]');
         
-        console.log('🔍 Debug check:');
-        console.log('- Overlay element found:', !!overlay);
-        console.log('- Menu element found:', !!menu);
-        
         if (overlay) {
-          console.log('- Overlay styles:', {
-            position: overlay.style.position,
-            zIndex: overlay.style.zIndex,
-            display: getComputedStyle(overlay).display
-          });
+          
         }
         
         if (menu) {
-          console.log('- Menu styles:', {
-            position: menu.style.position,
-            zIndex: menu.style.zIndex,
-            transform: getComputedStyle(menu).transform,
-            right: menu.style.right
-          });
+          
         }
       }, 100);
     }
@@ -82,7 +72,6 @@ const Header = ({ darkMode, toggleDarkMode }) => {
   const navLinks = [
     { name: 'Trang chủ', path: '/', icon: 'fas fa-home' },
     { name: 'Sản phẩm', path: '/products', icon: 'fas fa-tags' },
-    { name: 'Danh mục', path: '/categories', icon: 'fas fa-th-large' },
     { name: 'Blog', path: '/blog', icon: 'fas fa-blog' },
     { name: 'Dự án', path: '/projects', icon: 'fas fa-briefcase' },
     { name: 'Liên hệ', path: '/contact', icon: 'fas fa-phone' },
@@ -90,6 +79,7 @@ const Header = ({ darkMode, toggleDarkMode }) => {
 
   return (
     <>
+      {/* <LoginModal open={showLogin} onClose={() => setShowLogin(false)} darkMode={darkMode} /> */}
       {/* Top Bar */}
       <div className={`py-1.5 sm:py-2 transition-colors ${
         darkMode 
@@ -174,6 +164,58 @@ const Header = ({ darkMode, toggleDarkMode }) => {
                   <span>{link.name}</span>
                 </Link>
               ))}
+              
+              {/* Categories Dropdown */}
+              <div className="relative group">
+                <button className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg transition-all text-sm font-medium ${
+                  darkMode
+                    ? 'text-gray-300 hover:text-pink-400 hover:bg-gray-800'
+                    : 'text-gray-700 hover:text-pink-600 hover:bg-pink-50'
+                }`}>
+                  <i className="fas fa-th-large text-xs"></i>
+                  <span>Danh mục</span>
+                  <i className="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+                </button>
+                
+                {/* Categories Dropdown Menu */}
+                <div className="absolute top-full left-0 mt-1 w-64 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                  <div className={`rounded-xl shadow-xl border ${
+                    darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+                  } p-2`}>
+                    {categoriesLoading ? (
+                      <div className="p-4 text-center">
+                        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-pink-500 mx-auto"></div>
+                        <p className={`text-xs mt-2 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          Đang tải...
+                        </p>
+                      </div>
+                    ) : categories.length > 0 ? (
+                      <div className="space-y-1">
+                        {categories.map((category) => (
+                          <Link
+                            key={category.id}
+                            to={`/categories/${category.slug}`}
+                            className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                              darkMode
+                                ? 'text-gray-300 hover:text-white hover:bg-gray-700'
+                                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                            }`}
+                          >
+                            <span>{category.name}</span>
+                            <i className="fas fa-chevron-right text-xs opacity-50"></i>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 text-center">
+                        <p className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                          Không có danh mục
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
             </nav>
 
             {/* Search Bar - Desktop */}
@@ -215,7 +257,6 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               {/* Dark Mode Toggle */}
               <button
                 onClick={() => {
-                  console.log('🌙 Dark mode button clicked in Header');
                   toggleDarkMode();
                 }}
                 className={`p-2.5 rounded-lg transition-all ${
@@ -227,6 +268,37 @@ const Header = ({ darkMode, toggleDarkMode }) => {
               >
                 <i className={`fas ${darkMode ? 'fa-sun' : 'fa-moon'} text-lg`}></i>
               </button>
+
+              {/* Auth / Admin */}
+              {!token ? (
+                <Link
+                  to="/login"
+                  className={`hidden md:inline-flex items-center space-x-2 px-3 py-2 rounded-lg font-medium transition-all ${
+                    darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'
+                  }`}
+                >
+                  <i className="fas fa-sign-in-alt"></i>
+                  <span>Đăng nhập</span>
+                </Link>
+              ) : (
+                <div className="relative group">
+                  <button className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all ${darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-600 hover:text-pink-600 hover:bg-pink-50'}`}>
+                    <i className="fas fa-user-circle"></i>
+                    <span className="hidden sm:inline">{user?.full_name || 'Tài khoản'}</span>
+                    <i className="fas fa-chevron-down text-xs"></i>
+                  </button>
+                  <div className={`absolute right-0 mt-1 w-48 rounded-xl shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all ${darkMode ? 'bg-gray-900 border-gray-700' : 'bg-white border-gray-200'}`}>
+                    <Link to="/admin" className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:bg-gray-50'}`}>
+                      <span>Bảng quản trị</span>
+                      <i className="fas fa-external-link-alt text-xs opacity-60"></i>
+                    </Link>
+                    <button onClick={() => dispatch(logout())} className={`w-full text-left flex items-center justify-between px-3 py-2 rounded-lg text-sm ${darkMode ? 'text-gray-300 hover:bg-gray-800' : 'text-gray-700 hover:bg-gray-50'}`}>
+                      <span>Đăng xuất</span>
+                      <i className="fas fa-sign-out-alt text-xs opacity-60"></i>
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Cart */}
               <Link 
@@ -382,6 +454,68 @@ const Header = ({ darkMode, toggleDarkMode }) => {
                       <i className="fas fa-chevron-right text-xs ml-auto opacity-50"></i>
                     </Link>
                   ))}
+
+                  {!token ? (
+                    <Link
+                      to="/login"
+                      onClick={toggleMenu}
+                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all ${darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'}`}
+                    >
+                      <span className="font-medium">Đăng nhập</span>
+                      <i className="fas fa-sign-in-alt text-xs opacity-50"></i>
+                    </Link>
+                  ) : (
+                    <>
+                      <Link to="/admin" onClick={toggleMenu} className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all ${darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'}`}>
+                        <span className="font-medium">Bảng quản trị</span>
+                        <i className="fas fa-external-link-alt text-xs opacity-50"></i>
+                      </Link>
+                      <button onClick={() => { dispatch(logout()); toggleMenu(); }} className={`w-full text-left flex items-center justify-between px-4 py-3 rounded-xl transition-all ${darkMode ? 'text-gray-300 hover:text-white hover:bg-gray-800' : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'}`}>
+                        <span className="font-medium">Đăng xuất</span>
+                        <i className="fas fa-sign-out-alt text-xs opacity-50"></i>
+                      </button>
+                    </>
+                  )}
+
+                  {/* Categories Section in Mobile Menu */}
+                  <div className="mt-6">
+                    <h3 className={`text-sm font-semibold mb-3 px-4 ${
+                      darkMode ? 'text-gray-400' : 'text-gray-500'
+                    }`}>
+                      <i className="fas fa-th-large mr-2"></i>
+                      Danh mục sản phẩm
+                    </h3>
+                    <div className="space-y-1">
+                      {categoriesLoading ? (
+                        <div className="px-4 py-2 text-center">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-pink-500 mx-auto"></div>
+                        </div>
+                      ) : categories.length > 0 ? (
+                        categories.map((category, index) => (
+                          <Link
+                            key={category.id}
+                            to={`/categories/${category.slug}`}
+                            onClick={toggleMenu}
+                            className={`flex items-center justify-between px-4 py-3 rounded-xl transition-all ${
+                              darkMode
+                                ? 'text-gray-300 hover:text-white hover:bg-gray-800'
+                                : 'text-gray-700 hover:text-gray-900 hover:bg-gray-50'
+                            }`}
+                            style={{ animationDelay: `${(index + navLinks.length) * 50}ms` }}
+                          >
+                            <span className="font-medium">{category.name}</span>
+                            <i className="fas fa-chevron-right text-xs opacity-50"></i>
+                          </Link>
+                        ))
+                      ) : (
+                        <div className={`px-4 py-2 text-center text-xs ${
+                          darkMode ? 'text-gray-400' : 'text-gray-500'
+                        }`}>
+                          Không có danh mục
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </nav>
               </div>
 
@@ -390,7 +524,6 @@ const Header = ({ darkMode, toggleDarkMode }) => {
                 <div className="grid grid-cols-2 gap-4">
                   <button
                     onClick={() => {
-                      console.log('🌙 Dark mode toggle clicked in mobile menu');
                       toggleDarkMode();
                       toggleMenu();
                     }}

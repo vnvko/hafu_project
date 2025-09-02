@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import api from '../../services/api';
 
 const BlogPage = ({ darkMode }) => {
   const [posts, setPosts] = useState([]);
@@ -11,115 +12,38 @@ const BlogPage = ({ darkMode }) => {
 
   const postsPerPage = 12; // 3 rows x 4 posts = 12 per page mobile
 
-  // Mock blog data
+  // Lấy dữ liệu động từ API
   useEffect(() => {
-    const mockPosts = [
-      {
-        id: 1,
-        title: "10 Hashtag Trending Nhất Tháng 8/2024",
-        excerpt: "Khám phá những hashtag đang viral và cách sử dụng hiệu quả để tăng tương tác trên social media...",
-        content: "Nội dung blog đầy đủ ở đây...",
-        image: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=250&fit=crop",
-        date: "2024-08-20",
-        readTime: "5 phút đọc",
-        author: "HaFu Team",
-        category: "Trending",
-        tags: ["#trending", "#viral", "#social media"],
-        views: 1234,
-        likes: 89
-      },
-      {
-        id: 2,
-        title: "Cách Tăng Engagement Với Hashtag Hiệu Quả",
-        excerpt: "Bí quyết sử dụng hashtag để tăng tương tác và thu hút khách hàng tiềm năng cho business...",
-        content: "Nội dung blog đầy đủ ở đây...",
-        image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=250&fit=crop",
-        date: "2024-08-18",
-        readTime: "7 phút đọc",
-        author: "Marketing Expert",
-        category: "Tips",
-        tags: ["#engagement", "#marketing", "#tips"],
-        views: 892,
-        likes: 67
-      },
-      {
-        id: 3,
-        title: "Xu Hướng Social Media Marketing 2024",
-        excerpt: "Những xu hướng mới trong marketing social media và vai trò của hashtag trong strategy...",
-        content: "Nội dung blog đầy đủ ở đây...",
-        image: "https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=400&h=250&fit=crop",
-        date: "2024-08-15",
-        readTime: "6 phút đọc",
-        author: "Social Media Guru",
-        category: "Strategy",
-        tags: ["#strategy", "#trends", "#2024"],
-        views: 1567,
-        likes: 123
-      },
-      {
-        id: 4,
-        title: "Hashtag Instagram vs TikTok: So Sánh Chi Tiết",
-        excerpt: "Phân tích sự khác biệt trong cách sử dụng hashtag trên Instagram và TikTok...",
-        content: "Nội dung blog đầy đủ ở đây...",
-        image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=400&h=250&fit=crop",
-        date: "2024-08-12",
-        readTime: "8 phút đọc",
-        author: "Platform Expert",
-        category: "Platform",
-        tags: ["#instagram", "#tiktok", "#comparison"],
-        views: 743,
-        likes: 45
-      },
-      {
-        id: 5,
-        title: "Case Study: Hashtag Thành Công Cho Brand Việt",
-        excerpt: "Nghiên cứu trường hợp thực tế về việc sử dụng hashtag hiệu quả của các brand Việt Nam...",
-        content: "Nội dung blog đầy đủ ở đây...",
-        image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=250&fit=crop",
-        date: "2024-08-10",
-        readTime: "10 phút đọc",
-        author: "Case Study Team",
-        category: "Case Study",
-        tags: ["#casestudy", "#vietnam", "#success"],
-        views: 634,
-        likes: 78
-      },
-      {
-        id: 6,
-        title: "Tools Miễn Phí Để Research Hashtag",
-        excerpt: "Danh sách các công cụ miễn phí giúp bạn tìm kiếm và phân tích hashtag hiệu quả...",
-        content: "Nội dung blog đầy đủ ở đây...",
-        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=250&fit=crop",
-        date: "2024-08-08",
-        readTime: "4 phút đọc",
-        author: "Tools Expert",
-        category: "Tools",
-        tags: ["#tools", "#free", "#research"],
-        views: 956,
-        likes: 112
-      },
-      // Thêm 6 posts nữa để có 12 posts
-      ...Array.from({ length: 6 }, (_, i) => ({
-        id: 7 + i,
-        title: `Blog Post ${7 + i} - Hashtag Strategy`,
-        excerpt: `Mô tả ngắn gọn về nội dung blog post số ${7 + i}...`,
-        content: "Nội dung blog đầy đủ ở đây...",
-        image: `https://images.unsplash.com/photo-${1500000000000 + i}?w=400&h=250&fit=crop`,
-        date: `2024-08-0${7 - i}`,
-        readTime: `${3 + (i % 3)} phút đọc`,
-        author: ["HaFu Team", "Expert", "Specialist"][i % 3],
-        category: ["Tips", "Strategy", "Tools", "Trending"][i % 4],
-        tags: ["#hashtag", "#social", "#marketing"],
-        views: 300 + (i * 50),
-        likes: 20 + (i * 5)
-      }))
-    ];
-
-    setTimeout(() => {
-      setPosts(mockPosts);
-      setFilteredPosts(mockPosts);
-      setLoading(false);
-    }, 1000);
+    let mounted = true;
+    (async () => {
+      try {
+        setLoading(true);
+        const data = await api.getBlogPosts();
+        // Chuẩn hoá dữ liệu để khớp UI cũ
+        const normalized = (data || []).map((p) => ({
+          id: p.id,
+          title: p.title,
+          excerpt: (p.content || '').replace(/<[^>]*>?/gm, '').slice(0, 140) + '...',
+          content: p.content,
+          image: p.cover_url,
+          date: p.published_at || p.created_at,
+          readTime: '5 phút đọc',
+          author: 'HaFu Team',
+          category: 'Tin tức',
+          tags: ['#hashtag'],
+          views: 0,
+          likes: 0
+        }));
+        if (mounted) {
+          setPosts(normalized);
+          setFilteredPosts(normalized);
+          setLoading(false);
+        }
+      } catch (e) {
+        if (mounted) setLoading(false);
+      }
+    })();
+    return () => { mounted = false; };
   }, []);
 
   // Filter and search logic
